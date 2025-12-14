@@ -37,16 +37,19 @@ const WizardHatIcon = ({ size = 24, className = "" }: { size?: number, className
     viewBox="0 0 24 24" 
     fill="none" 
     stroke="currentColor" 
-    strokeWidth="2" 
+    strokeWidth="1.5" 
     strokeLinecap="round" 
     strokeLinejoin="round" 
     className={className}
   >
-    <path d="M2 22h20" />
-    <path d="M12 2L4.5 22" />
-    <path d="M12 2l7.5 20" />
-    <path d="M12 2l3 9h-6l3-9" />
-    <path d="M6 16h12" /> 
+    {/* Brim */}
+    <path d="M2 21h20c-2-3-3.5-4-8-4s-6 1-8 4z" /> 
+    {/* Cone/Hat Body - crumpled look */}
+    <path d="M6.5 17c0-5 2-8 3-10l-1-3c2-2 5-2 6 0l2 4c0 4 2 6 2 9" />
+    {/* Band/Buckle area */}
+    <path d="M7 16c3-1 8-1 11 0" />
+    {/* Tip bend */}
+    <path d="M8.5 4c1.5-2 4-2 6 0" />
   </svg>
 );
 
@@ -80,7 +83,7 @@ const Logo = () => (
   <div className="flex flex-col items-center select-none group cursor-pointer p-2">
     <div className="flex items-center gap-3 text-fantasy-gold mb-1">
       <div className="relative">
-        <WizardHatIcon size={32} className="text-fantasy-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" />
+        <WizardHatIcon size={40} className="text-fantasy-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" />
         <div className="absolute -top-1 -right-1 text-white animate-pulse"><Sparkles size={12} /></div>
       </div>
       <span className="font-royal font-bold text-3xl tracking-[0.15em] text-white gold-text-shadow bg-clip-text text-transparent bg-gradient-to-b from-fantasy-gold-light to-fantasy-gold">
@@ -91,6 +94,17 @@ const Logo = () => (
   </div>
 );
 
+const getAvatarEmoji = (type: AvatarType) => {
+  switch (type) {
+    case AvatarType.SWORDS: return '⚔️';
+    case AvatarType.WIZARD_BEARD: return '🧙‍♂️';
+    case AvatarType.MAGIC_WAND: return '🪄';
+    case AvatarType.THE_WIZARD: return '🎩';
+    case AvatarType.CRYSTAL_BALL: return '🔮';
+    default: return '🔮';
+  }
+};
+
 export default function App() {
   const [view, setView] = useState<ViewState>('landing');
   const [quests, setQuests] = useState<Quest[]>([]);
@@ -100,7 +114,7 @@ export default function App() {
   const [taskInput, setTaskInput] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [stepCount, setStepCount] = useState<5 | 10>(5);
-  const [selectedAvatar, setSelectedAvatar] = useState<AvatarType>(AvatarType.WARRIOR);
+  const [selectedAvatar, setSelectedAvatar] = useState<AvatarType>(AvatarType.CRYSTAL_BALL);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -274,7 +288,7 @@ export default function App() {
              </div>
              <div className="w-12 h-12 rounded-full border-2 border-fantasy-gold/30 bg-fantasy-primary flex items-center justify-center text-fantasy-gold shadow-gold-glow relative overflow-hidden group">
                 <div className="absolute inset-0 bg-fantasy-gold/10 group-hover:bg-fantasy-gold/20 transition-colors"></div>
-                <WizardHatIcon size={20} />
+                <WizardHatIcon size={24} />
              </div>
           </div>
        </nav>
@@ -445,9 +459,11 @@ export default function App() {
                         onChange={(e) => setSelectedAvatar(e.target.value as AvatarType)}
                         className="w-full py-5 px-6 bg-fantasy-dark/50 border border-fantasy-gold/20 text-white focus:outline-none focus:border-fantasy-gold/50 font-royal text-xs uppercase tracking-widest appearance-none cursor-pointer hover:bg-fantasy-dark/70 transition-colors text-center rounded-sm"
                       >
-                        {Object.values(AvatarType).map(type => (
-                          <option key={type} value={type}>{type}</option>
-                        ))}
+                        <option value={AvatarType.CRYSTAL_BALL}>Crystal Ball</option>
+                        <option value={AvatarType.WIZARD_BEARD}>Wizard (Bearded)</option>
+                        <option value={AvatarType.MAGIC_WAND}>Magic Wand</option>
+                        <option value={AvatarType.THE_WIZARD}>The Wizard</option>
+                        <option value={AvatarType.SWORDS}>Dual Swords</option>
                       </select>
                       <div className="absolute right-4 top-1/2 -translate-y-1/2 text-fantasy-gold/50 pointer-events-none group-hover:text-fantasy-gold transition-colors">▼</div>
                     </div>
@@ -507,7 +523,7 @@ export default function App() {
                </div>
              </div>
              <div className="w-10 h-10 rounded-full border border-fantasy-gold/40 flex items-center justify-center text-xl bg-fantasy-primary shadow-blue-glow">
-               {activeQuest.avatar === AvatarType.WARRIOR ? '⚔️' : '🔮'}
+               {getAvatarEmoji(activeQuest.avatar)}
              </div>
            </div>
         </header>

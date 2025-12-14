@@ -14,11 +14,11 @@ export interface Step {
 }
 
 export enum AvatarType {
-  WARRIOR = 'WARRIOR',
-  MAGE = 'MAGE',
-  ROGUE = 'ROGUE',
-  RANGER = 'RANGER',
-  PALADIN = 'PALADIN'
+  CRYSTAL_BALL = 'CRYSTAL_BALL',
+  WIZARD_BEARD = 'WIZARD_BEARD',
+  MAGIC_WAND = 'MAGIC_WAND',
+  THE_WIZARD = 'THE_WIZARD',
+  SWORDS = 'SWORDS'
 }
 
 export interface Quest {

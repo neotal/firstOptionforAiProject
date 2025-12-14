@@ -9,10 +9,21 @@ interface QuestMapProps {
 }
 
 const AvatarIcon = ({ type }: { type: AvatarType }) => {
+  const getEmoji = () => {
+    switch (type) {
+      case AvatarType.SWORDS: return '⚔️';
+      case AvatarType.WIZARD_BEARD: return '🧙‍♂️';
+      case AvatarType.MAGIC_WAND: return '🪄';
+      case AvatarType.THE_WIZARD: return '🎩';
+      case AvatarType.CRYSTAL_BALL: return '🔮';
+      default: return '🔮';
+    }
+  };
+
   return (
     <div className="relative">
       <div className="text-4xl filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] animate-bounce z-10 relative">
-        {type === AvatarType.WARRIOR ? '⚔️' : '🔮'}
+        {getEmoji()}
       </div>
       <div className="absolute top-10 left-1/2 -translate-x-1/2 w-8 h-2 bg-black/50 blur-sm rounded-full"></div>
     </div>
@@ -65,7 +76,7 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
             {/* Content Card */}
             <div 
               onClick={() => onSelectStep(index)}
-              className={`ml-36 md:ml-0 w-[calc(100%-120px)] md:w-[42%] cursor-pointer transition-all duration-300 transform ${
+              className={`ml-36 md:ml-0 w-[calc(100%-120px)] md:w-[46%] cursor-pointer transition-all duration-300 transform ${
                 isSelected ? 'scale-105 z-20' : 'scale-100 z-10 hover:scale-102'
               }`}
             >
@@ -89,18 +100,18 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
                   )}
 
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className={`font-royal text-[10px] tracking-[0.2em] uppercase font-bold ${isActive || isSelected ? 'text-fantasy-gold' : 'text-fantasy-text-muted'}`}>
+                    <h3 className={`font-royal text-xs tracking-[0.2em] uppercase font-bold ${isActive || isSelected ? 'text-fantasy-gold' : 'text-fantasy-text-muted'}`}>
                       Step {index + 1}
                     </h3>
                   </div>
-                  <p className={`font-body text-sm md:text-base leading-relaxed ${isPast ? 'text-blue-200/60 line-through' : 'text-white'}`}>
+                  <p className={`font-body text-base md:text-lg leading-relaxed ${isPast ? 'text-blue-200/60 line-through' : 'text-white'}`}>
                     {step.title}
                   </p>
                </div>
                
                {/* Connector Line for desktop alternate layout */}
-               <div className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-16 h-[1px] bg-fantasy-gold/20 ${
-                  index % 2 === 0 ? '-left-16' : '-right-16'
+               <div className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-8 h-[1px] bg-fantasy-gold/20 ${
+                  index % 2 === 0 ? '-left-8' : '-right-8'
                }`}></div>
             </div>
           </div>
