@@ -42,7 +42,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       const response = await getStepChatResponse(step, questTitle, userText, step.chatHistory);
       addMessageToStep(response, 'model');
     } catch (error) {
-      addMessageToStep("The mystical connection has been severed. Please try again.", 'model');
+      addMessageToStep("Connection lost. Please try again.", 'model');
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +55,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         <div className="flex items-center gap-2 mb-2 justify-center">
             <Scroll size={14} className="text-fantasy-gold" />
             <h2 className="text-[10px] font-royal text-fantasy-gold uppercase tracking-[0.2em] font-bold">
-              The Oracle's Guidance
+              AI Assistant
             </h2>
         </div>
         <h3 className="text-white font-royal text-center text-sm tracking-wide">{step.title}</h3>
@@ -71,7 +71,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           <div className="mb-6 flex flex-col items-center">
             <div className="flex items-center gap-3 mb-3 opacity-60">
                 <div className="h-[1px] w-6 bg-fantasy-gold"></div>
-                <span className="text-[10px] font-royal text-fantasy-gold uppercase tracking-widest">Artifacts Needed</span>
+                <span className="text-[10px] font-royal text-fantasy-gold uppercase tracking-widest">Tools Needed</span>
                 <div className="h-[1px] w-6 bg-fantasy-gold"></div>
             </div>
             <div className="flex flex-wrap gap-2 justify-center">
@@ -90,13 +90,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
              className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-fantasy-gold/10 to-fantasy-gold/20 hover:from-fantasy-gold/20 hover:to-fantasy-gold/30 border border-fantasy-gold/40 text-fantasy-gold font-royal text-xs py-4 tracking-widest uppercase transition-all duration-300 hover:shadow-gold-glow group rounded-sm"
            >
              <CheckCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
-             Mark as Completed
+             Complete Step
            </button>
         )}
          {step.isCompleted && (
              <div className="w-full flex items-center justify-center gap-2 text-green-400 font-royal text-[10px] py-4 border border-green-500/30 bg-green-900/10 uppercase tracking-widest rounded-sm">
              <CheckCircle className="w-4 h-4" />
-             Step Conquered
+             Step Completed
            </div>
         )}
       </div>
@@ -107,7 +107,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           <div className="flex flex-col items-center justify-center h-full text-fantasy-text-muted opacity-40">
             <Sparkles className="mb-3 w-6 h-6 text-fantasy-gold" />
             <p className="font-royal text-xs text-center uppercase tracking-widest">
-              Commune with the Oracle
+              Ask questions about this step...
             </p>
           </div>
         ) : (
@@ -123,7 +123,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   {msg.text}
                </div>
                <span className="text-[9px] font-royal text-fantasy-text-muted mt-2 uppercase tracking-widest opacity-50 px-1">
-                  {msg.role === 'model' ? 'The Oracle' : 'Hero'}
+                  {msg.role === 'model' ? 'AI' : 'You'}
                </span>
             </div>
           ))
@@ -131,7 +131,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         {isLoading && (
            <div className="flex flex-col items-center justify-center py-4 opacity-70">
               <Loader2 className="w-5 h-5 animate-spin text-fantasy-gold mb-2" />
-              <span className="text-[9px] font-royal text-fantasy-gold uppercase tracking-widest">Divining...</span>
+              <span className="text-[9px] font-royal text-fantasy-gold uppercase tracking-widest">Thinking...</span>
            </div>
         )}
       </div>
@@ -144,7 +144,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask for wisdom..."
+            placeholder="Ask a question..."
             disabled={isLoading || step.isCompleted}
             className="flex-1 bg-fantasy-dark/50 border border-fantasy-gold/10 px-4 py-3 text-sm text-white font-body focus:outline-none focus:border-fantasy-gold/40 focus:bg-fantasy-dark/70 placeholder-fantasy-text-muted/50 disabled:opacity-50 transition-colors rounded-sm"
           />

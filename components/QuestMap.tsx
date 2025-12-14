@@ -90,7 +90,7 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
 
                   <div className="flex justify-between items-start mb-2">
                     <h3 className={`font-royal text-[10px] tracking-[0.2em] uppercase font-bold ${isActive || isSelected ? 'text-fantasy-gold' : 'text-fantasy-text-muted'}`}>
-                      Stage {['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][index] || index + 1}
+                      Step {index + 1}
                     </h3>
                   </div>
                   <p className={`font-body text-sm md:text-base leading-relaxed ${isPast ? 'text-blue-200/60 line-through' : 'text-white'}`}>
@@ -122,7 +122,7 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
           </div>
         )}
         <div className="mt-10 px-6 py-2 text-fantasy-gold/60 font-royal text-[10px] tracking-[0.4em] uppercase border-t border-b border-fantasy-gold/10">
-           Journey's End
+           Finish Line
         </div>
       </div>
     </div>

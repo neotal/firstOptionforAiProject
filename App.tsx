@@ -149,7 +149,7 @@ export default function App() {
       setSelectedFile(null);
     } catch (e) {
       console.error(e);
-      setError("The ancient scrolls are unreadable. Please try again.");
+      setError("We couldn't generate the quest plan. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -210,30 +210,30 @@ export default function App() {
 
       <nav className="p-8 flex justify-between items-center z-10 relative">
         <Logo />
-        <GoldButton onClick={() => setView('dashboard')}>Open Grimoire</GoldButton>
+        <GoldButton onClick={() => setView('dashboard')}>Enter App</GoldButton>
       </nav>
 
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative z-10">
         <div className="max-w-4xl space-y-10 animate-[fadeIn_1s_ease-out] bg-fantasy-dark/40 p-12 rounded-2xl backdrop-blur-sm border border-white/5 shadow-2xl">
            <div className="space-y-4">
              <h1 className="text-5xl md:text-7xl font-royal font-bold text-white mb-2 drop-shadow-lg tracking-wide">
-               Master Your <span className="text-fantasy-gold">Journey</span>
+               Gamify Your <span className="text-fantasy-gold">Tasks</span>
              </h1>
              <p className="text-lg md:text-xl text-blue-200 font-royal tracking-widest uppercase opacity-80">
-               Gamified Productivity for the Modern Mage
+               Turn big projects into easy steps with AI
              </p>
            </div>
            
            <Divider />
            
            <p className="text-xl text-fantasy-text font-body max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-             Transform mundane tasks into epic quests. <br/>
-             Consult the Oracle, gain XP, and conquer your to-do list.
+             Break down overwhelming tasks into an epic journey. <br/>
+             Get a personal AI guide, track progress, and reach your goals.
            </p>
 
            <div className="pt-8">
              <GoldButton onClick={() => setView('dashboard')} className="px-12 py-5 text-lg border-2 bg-fantasy-dark/80 hover:bg-fantasy-gold/20">
-               Summon Your Quests
+               Get Started
              </GoldButton>
            </div>
         </div>
@@ -252,7 +252,7 @@ export default function App() {
           <div onClick={() => setView('landing')}><Logo /></div>
           <div className="flex items-center gap-6">
              <div className="hidden md:flex flex-col items-end">
-                <span className="text-fantasy-gold text-xs font-royal tracking-widest uppercase">Mage Level</span>
+                <span className="text-fantasy-gold text-xs font-royal tracking-widest uppercase">Level</span>
                 <span className="text-white font-body text-lg font-bold">{MOCK_USER.level}</span>
              </div>
              <div className="w-12 h-12 rounded-full border-2 border-fantasy-gold/30 bg-fantasy-primary flex items-center justify-center text-fantasy-gold shadow-gold-glow relative overflow-hidden group">
@@ -265,11 +265,11 @@ export default function App() {
        <div className="max-w-7xl mx-auto w-full py-12 px-6 flex-1 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-fantasy-gold/20 pb-6 gap-4">
             <div>
-              <h2 className="text-4xl font-royal text-white mb-2 gold-text-shadow">Quest Board</h2>
-              <p className="text-blue-200 font-body text-lg">Your active scrolls and completed chronicles.</p>
+              <h2 className="text-4xl font-royal text-white mb-2 gold-text-shadow">My Quests</h2>
+              <p className="text-blue-200 font-body text-lg">Manage your ongoing and completed projects.</p>
             </div>
             <GoldButton onClick={() => setView('new-quest')}>
-              <Plus size={16} /> Inscribe New Quest
+              <Plus size={16} /> New Quest
             </GoldButton>
           </div>
 
@@ -279,13 +279,13 @@ export default function App() {
               <div className="w-20 h-20 bg-fantasy-dark/50 rounded-full flex items-center justify-center mx-auto mb-6 border border-fantasy-gold/30">
                  <Scroll className="w-10 h-10 text-fantasy-gold/70" strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-royal text-white mb-3">Your Chronicle is Empty</h3>
+              <h3 className="text-2xl font-royal text-white mb-3">No Quests Yet</h3>
               <p className="text-blue-200 mb-8 font-body leading-relaxed">
-                The pages are blank. A hero must act to create history. <br/>
-                What challenge awaits you today?
+                It looks like you haven't started any quests yet. <br/>
+                Create a new one to begin your journey!
               </p>
               <button onClick={() => setView('new-quest')} className="text-fantasy-gold hover:text-white transition-colors font-royal tracking-widest text-sm border-b border-fantasy-gold pb-1 hover:border-white">
-                Start a Journey
+                Start a Quest
               </button>
             </div>
           ) : (
@@ -304,7 +304,7 @@ export default function App() {
 
                   <div className="flex justify-between items-start mb-6">
                     <div className={`px-3 py-1 font-royal text-[10px] tracking-widest border rounded-full uppercase font-bold ${quest.isCompleted ? 'border-green-500/30 text-green-400 bg-green-900/20' : 'border-blue-400/30 text-blue-300 bg-blue-900/20'}`}>
-                      {quest.isCompleted ? 'Fulfilled' : 'In Progress'}
+                      {quest.isCompleted ? 'Completed' : 'In Progress'}
                     </div>
                     <Gem className="text-fantasy-gold opacity-60 group-hover:opacity-100 transition-opacity drop-shadow-md" size={24} />
                   </div>
@@ -319,7 +319,7 @@ export default function App() {
                   </div>
                   
                   <div className="flex justify-between text-xs text-blue-300 font-body opacity-80">
-                    <span>{quest.steps.length} Phases</span>
+                    <span>{quest.steps.length} Steps</span>
                     <span>{new Date(quest.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -343,7 +343,7 @@ export default function App() {
       <div className="flex-1 flex items-center justify-center p-4 z-10 py-12">
         <div className="max-w-4xl w-full">
           <button onClick={() => setView('dashboard')} className="text-fantasy-gold/70 hover:text-fantasy-gold mb-8 flex items-center gap-2 font-royal text-xs uppercase tracking-widest transition-colors pl-2">
-            <ChevronRight className="rotate-180" size={14} /> Back to Board
+            <ChevronRight className="rotate-180" size={14} /> Back to My Quests
           </button>
           
           <div className="bg-fantasy-primary/90 border border-fantasy-gold/20 p-10 md:p-16 relative backdrop-blur-xl shadow-2xl rounded-sm">
@@ -354,18 +354,18 @@ export default function App() {
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-fantasy-gold/30"></div>
 
             <div className="text-center mb-10">
-               <h2 className="text-3xl font-royal text-fantasy-gold mb-2">Inscription Ritual</h2>
-               <p className="text-blue-200 font-body">Define the parameters of your next undertaking.</p>
+               <h2 className="text-3xl font-royal text-fantasy-gold mb-2">Create New Quest</h2>
+               <p className="text-blue-200 font-body">Tell us about your task, and we'll break it down for you.</p>
             </div>
             
             <div className="space-y-12">
               <div>
-                <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Describe Your Mission</label>
+                <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Task Description</label>
                 <div className="relative">
                   <textarea 
                     value={taskInput}
                     onChange={(e) => setTaskInput(e.target.value)}
-                    placeholder="What feat must be accomplished? (e.g. 'Learn React Hooks', 'Clean the garage', 'Plan a vacation')"
+                    placeholder="What do you need to get done? (e.g. 'Learn React', 'Clean the garage', 'Plan a vacation')"
                     className="w-full h-40 bg-fantasy-dark/50 border border-fantasy-gold/20 p-6 text-white font-body text-lg focus:border-fantasy-gold/60 focus:ring-1 focus:ring-fantasy-gold/30 focus:outline-none transition-all resize-none placeholder-white/20 text-center rounded-md"
                   />
                   
@@ -373,7 +373,7 @@ export default function App() {
                   <button 
                     onClick={() => fileInputRef.current?.click()}
                     className="absolute bottom-4 right-4 p-2 text-fantasy-gold/60 hover:text-fantasy-gold hover:bg-fantasy-gold/10 rounded-full transition-all"
-                    title="Attach Tome (PDF) or Vision (Image)"
+                    title="Attach PDF or Image"
                   >
                     <Paperclip size={20} />
                   </button>
@@ -403,25 +403,25 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                  <div>
-                    <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Quest Duration</label>
+                    <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Quest Length</label>
                     <div className="flex gap-4">
                       <button 
                         onClick={() => setStepCount(5)}
                         className={`flex-1 py-5 border rounded-sm font-royal text-xs uppercase tracking-widest transition-all ${stepCount === 5 ? 'border-fantasy-gold text-fantasy-gold bg-fantasy-gold/10 shadow-gold-glow' : 'border-fantasy-gold/10 text-fantasy-text-muted hover:border-fantasy-gold/30 hover:bg-white/5'}`}
                       >
-                        Short (5 Steps)
+                        Quick (5 Steps)
                       </button>
                       <button 
                         onClick={() => setStepCount(10)}
                         className={`flex-1 py-5 border rounded-sm font-royal text-xs uppercase tracking-widest transition-all ${stepCount === 10 ? 'border-fantasy-gold text-fantasy-gold bg-fantasy-gold/10 shadow-gold-glow' : 'border-fantasy-gold/10 text-fantasy-text-muted hover:border-fantasy-gold/30 hover:bg-white/5'}`}
                       >
-                        Epic (10 Steps)
+                        Detailed (10 Steps)
                       </button>
                     </div>
                  </div>
                  
                  <div>
-                    <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Select Avatar</label>
+                    <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Choose Hero</label>
                     <div className="relative group">
                       <select 
                         value={selectedAvatar}
@@ -451,7 +451,7 @@ export default function App() {
                   className="w-full md:w-auto px-20 py-5 text-base"
                 >
                   {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles size={18} />}
-                  {isGenerating ? 'Divining Path...' : 'Begin Journey'}
+                  {isGenerating ? 'Generating...' : 'Start Quest'}
                 </GoldButton>
               </div>
             </div>
@@ -474,14 +474,14 @@ export default function App() {
                <LayoutDashboard size={20} />
              </button>
              <div className="flex flex-col">
-                <span className="text-[10px] text-fantasy-gold font-royal uppercase tracking-widest opacity-80">Current Journey</span>
+                <span className="text-[10px] text-fantasy-gold font-royal uppercase tracking-widest opacity-80">Current Quest</span>
                 <h1 className="font-royal text-lg text-white tracking-wide truncate max-w-[200px] md:max-w-md">{activeQuest.title}</h1>
              </div>
            </div>
            
            <div className="flex items-center gap-6">
              <div className="hidden md:flex flex-col items-end">
-               <span className="text-fantasy-gold text-[10px] font-royal tracking-widest uppercase mb-1 opacity-80">Completion</span>
+               <span className="text-fantasy-gold text-[10px] font-royal tracking-widest uppercase mb-1 opacity-80">Progress</span>
                <div className="w-32 h-1.5 bg-fantasy-primary rounded-full overflow-hidden border border-white/5">
                   <div 
                     className="h-full bg-gradient-to-r from-fantasy-gold-dim to-fantasy-gold shadow-gold-glow"
