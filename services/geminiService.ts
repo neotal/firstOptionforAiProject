@@ -12,19 +12,38 @@ const getAiClient = () => {
   return new GoogleGenAI({ apiKey });
 };
 
+async function fileToPart(file: File): Promise<{ inlineData: { data: string; mimeType: string } }> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // remove the Data-URL prefix (e.g. "data:image/png;base64,")
+      const base64String = (reader.result as string).split(',')[1];
+      resolve({
+        inlineData: {
+          data: base64String,
+          mimeType: file.type
+        }
+      });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export const generateQuestBreakdown = async (
   taskDescription: string, 
-  stepCount: number
+  stepCount: number,
+  file?: File | null
 ): Promise<{ title: string; steps: Omit<Step, 'id' | 'isCompleted' | 'chatHistory'>[] }> => {
   const ai = getAiClient();
   
   const prompt = `
     You are a Gamification Quest Master. 
-    Analyze the following task: "${taskDescription}".
+    Analyze the following task description ${file ? "and the attached file" : ""}: "${taskDescription}".
     
     Break it down into exactly ${stepCount} distinct, actionable steps (sub-tasks).
     
-    IMPORTANT: Detect the language of the task description. 
+    IMPORTANT: Detect the language of the task description/file. 
     If the task description is in Hebrew, the Title, Step Titles, and Descriptions MUST be in Hebrew.
     If it is in English, they must be in English.
 
@@ -32,9 +51,16 @@ export const generateQuestBreakdown = async (
     For each step, provide a title, a detailed description of what to do, and a list of recommended tools or resources (just names).
   `;
 
+  const parts: any[] = [{ text: prompt }];
+
+  if (file) {
+    const filePart = await fileToPart(file);
+    parts.push(filePart);
+  }
+
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: prompt,
+    contents: { parts },
     config: {
       responseMimeType: "application/json",
       responseSchema: {

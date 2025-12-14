@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Quest, ViewState, Step, AvatarType } from './types';
 import { generateQuestBreakdown } from './services/geminiService';
 import { QuestMap } from './components/QuestMap';
@@ -14,7 +14,11 @@ import {
   LayoutDashboard,
   Scroll,
   Gem,
-  Sparkles
+  Sparkles,
+  Paperclip,
+  X,
+  FileText,
+  Image as ImageIcon
 } from 'lucide-react';
 
 const MOCK_USER = {
@@ -94,28 +98,36 @@ export default function App() {
   
   // New Quest Form State
   const [taskInput, setTaskInput] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [stepCount, setStepCount] = useState<5 | 10>(5);
   const [selectedAvatar, setSelectedAvatar] = useState<AvatarType>(AvatarType.WARRIOR);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Active Quest UI State
   const [selectedMapStepIndex, setSelectedMapStepIndex] = useState<number>(0);
 
   const activeQuest = quests.find(q => q.id === activeQuestId);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
   const handleCreateQuest = async () => {
-    if (!taskInput.trim()) return;
+    if (!taskInput.trim() && !selectedFile) return;
     setIsGenerating(true);
     setError(null);
 
     try {
-      const breakdown = await generateQuestBreakdown(taskInput, stepCount);
+      const breakdown = await generateQuestBreakdown(taskInput, stepCount, selectedFile);
       
       const newQuest: Quest = {
         id: crypto.randomUUID(),
         title: breakdown.title,
-        originalTask: taskInput,
+        originalTask: taskInput || (selectedFile ? `Analyze ${selectedFile.name}` : 'New Quest'),
         createdAt: Date.now(),
         difficulty: stepCount === 5 ? '5' : '10',
         avatar: selectedAvatar,
@@ -134,6 +146,7 @@ export default function App() {
       setSelectedMapStepIndex(0);
       setView('active-quest');
       setTaskInput('');
+      setSelectedFile(null);
     } catch (e) {
       console.error(e);
       setError("The ancient scrolls are unreadable. Please try again.");
@@ -348,12 +361,44 @@ export default function App() {
             <div className="space-y-12">
               <div>
                 <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Describe Your Mission</label>
-                <textarea 
-                  value={taskInput}
-                  onChange={(e) => setTaskInput(e.target.value)}
-                  placeholder="What feat must be accomplished? (e.g. 'Learn React Hooks', 'Clean the garage', 'Plan a vacation')"
-                  className="w-full h-40 bg-fantasy-dark/50 border border-fantasy-gold/20 p-6 text-white font-body text-lg focus:border-fantasy-gold/60 focus:ring-1 focus:ring-fantasy-gold/30 focus:outline-none transition-all resize-none placeholder-white/20 text-center rounded-md"
-                />
+                <div className="relative">
+                  <textarea 
+                    value={taskInput}
+                    onChange={(e) => setTaskInput(e.target.value)}
+                    placeholder="What feat must be accomplished? (e.g. 'Learn React Hooks', 'Clean the garage', 'Plan a vacation')"
+                    className="w-full h-40 bg-fantasy-dark/50 border border-fantasy-gold/20 p-6 text-white font-body text-lg focus:border-fantasy-gold/60 focus:ring-1 focus:ring-fantasy-gold/30 focus:outline-none transition-all resize-none placeholder-white/20 text-center rounded-md"
+                  />
+                  
+                  {/* File Upload Button inside Textarea */}
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute bottom-4 right-4 p-2 text-fantasy-gold/60 hover:text-fantasy-gold hover:bg-fantasy-gold/10 rounded-full transition-all"
+                    title="Attach Tome (PDF) or Vision (Image)"
+                  >
+                    <Paperclip size={20} />
+                  </button>
+                  <input 
+                    type="file" 
+                    hidden 
+                    ref={fileInputRef} 
+                    onChange={handleFileSelect} 
+                    accept="image/*,application/pdf"
+                  />
+
+                  {/* Selected File Display */}
+                  {selectedFile && (
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-fantasy-dark/90 px-3 py-1.5 rounded-full border border-fantasy-gold/30 shadow-lg animate-[fadeIn_0.3s_ease-out]">
+                      {selectedFile.type.includes('pdf') ? <FileText size={14} className="text-fantasy-gold"/> : <ImageIcon size={14} className="text-fantasy-gold"/>}
+                      <span className="text-xs text-white/90 truncate max-w-[150px] font-body">{selectedFile.name}</span>
+                      <button 
+                        onClick={() => setSelectedFile(null)}
+                        className="ml-1 text-fantasy-text-muted hover:text-red-400 transition-colors"
+                      >
+                        <X size={14}/>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -402,7 +447,7 @@ export default function App() {
               <div className="flex justify-center pt-6">
                 <GoldButton 
                   onClick={handleCreateQuest}
-                  disabled={isGenerating || !taskInput}
+                  disabled={isGenerating || (!taskInput && !selectedFile)}
                   className="w-full md:w-auto px-20 py-5 text-base"
                 >
                   {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles size={18} />}
