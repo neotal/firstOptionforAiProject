@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuestLog AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Fauna+One&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              royal: ['"Cinzel"', 'serif'],
+              body: ['"Fauna One"', 'serif'],
+            },
+            colors: {
+              fantasy: {
+                gold: '#c5a059',
+                'gold-light': '#e6c985',
+                'gold-dim': '#8a6e3e',
+                dark: '#050505',
+                blue: '#0f172a', // Slate 900
+                'blue-light': '#1e293b', // Slate 800
+                text: '#d1d5db',
+                'text-muted': '#9ca3af'
+              }
+            },
+            backgroundImage: {
+              'mountain-hero': "linear-gradient(to bottom, rgba(5,5,5,0.3), rgba(5,5,5,1)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop')",
+              'parchment': "url('https://www.transparenttextures.com/patterns/stardust.png')",
+            },
+            boxShadow: {
+              'gold-glow': '0 0 15px rgba(197, 160, 89, 0.3)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050505;
+        color: #d1d5db;
+        font-family: 'Fauna One', serif;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155; 
+        border: 1px solid #0f172a;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #c5a059; 
+      }
+      
+      .gold-text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      }
+      
+      .gold-border-gradient {
+        border-image: linear-gradient(to right, transparent, #c5a059, transparent) 1;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
