@@ -18,8 +18,7 @@ import {
   Paperclip,
   X,
   FileText,
-  Image as ImageIcon,
-  Trophy
+  Image as ImageIcon
 } from 'lucide-react';
 
 const MOCK_USER = {
@@ -27,19 +26,6 @@ const MOCK_USER = {
   level: 5,
   xp: 2400
 };
-
-const MOTIVATIONAL_QUOTES = [
-  "Even the smallest person can change the course of the future.",
-  "Not all those who wander are lost.",
-  "Every step forward is a victory won.",
-  "The journey of a thousand miles begins with a single step.",
-  "Your courage grows with every challenge conquered.",
-  "Great deeds are done by small strokes.",
-  "Keep your face always toward the sunshine, and shadows will fall behind you.",
-  "Believe you can and you're halfway there.",
-  "Magic happens when you don't give up.",
-  "A hero is one who knows how to hang on for one minute longer."
-];
 
 // --- Fantasy Components ---
 
@@ -122,12 +108,6 @@ export default function App() {
   // Active Quest UI State
   const [selectedMapStepIndex, setSelectedMapStepIndex] = useState<number>(0);
   
-  // Motivation Modal State
-  const [motivationModal, setMotivationModal] = useState<{show: boolean, quote: string}>({
-    show: false,
-    quote: ''
-  });
-
   const activeQuest = quests.find(q => q.id === activeQuestId);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,11 +156,6 @@ export default function App() {
   };
 
   const handleCompleteStep = (questId: string) => {
-    // 1. Show Motivation Modal
-    const randomQuote = MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
-    setMotivationModal({ show: true, quote: randomQuote });
-
-    // 2. Update Quest State
     setQuests(prev => prev.map(q => {
       if (q.id !== questId) return q;
       
@@ -204,8 +179,6 @@ export default function App() {
     // Auto advance selection if not finished
     const currentQ = quests.find(q => q.id === questId);
     if (currentQ && currentQ.currentStepIndex < currentQ.steps.length - 1) {
-       // Optional: Add a small delay before moving the selection to let the user see the modal first
-       // For now, we update immediately behind the modal
         setSelectedMapStepIndex(currentQ.currentStepIndex + 1);
     }
   };
@@ -224,50 +197,6 @@ export default function App() {
       };
       return { ...q, steps: updatedSteps };
     }));
-  };
-
-  // --- Motivation Modal Component ---
-  const MotivationModal = () => {
-    if (!motivationModal.show) return null;
-    
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-fantasy-dark/90 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out]">
-        <div className="relative w-full max-w-md bg-fantasy-primary border-2 border-fantasy-gold p-8 rounded-lg shadow-[0_0_50px_rgba(212,175,55,0.3)] transform animate-[scaleIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)] text-center">
-           
-           {/* Decorative Elements */}
-           <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-fantasy-gold -mt-1 -ml-1"></div>
-           <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-fantasy-gold -mt-1 -mr-1"></div>
-           <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-fantasy-gold -mb-1 -ml-1"></div>
-           <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-fantasy-gold -mb-1 -mr-1"></div>
-
-           <div className="flex justify-center mb-6">
-             <div className="relative">
-               <div className="w-20 h-20 rounded-full bg-fantasy-gold/10 border border-fantasy-gold flex items-center justify-center shadow-gold-glow animate-bounce">
-                  <Trophy size={40} className="text-fantasy-gold drop-shadow-md" />
-               </div>
-               <Sparkles className="absolute -top-2 -right-4 text-white animate-pulse" size={24} />
-               <Sparkles className="absolute bottom-0 -left-4 text-white animate-pulse delay-150" size={18} />
-             </div>
-           </div>
-
-           <h3 className="text-2xl font-royal text-white mb-2 tracking-widest uppercase">
-             Victory!
-           </h3>
-           <div className="h-[1px] w-24 bg-fantasy-gold/50 mx-auto mb-6"></div>
-
-           <p className="text-lg text-blue-100 font-body italic mb-8 leading-relaxed">
-             "{motivationModal.quote}"
-           </p>
-
-           <GoldButton 
-             onClick={() => setMotivationModal({show: false, quote: ''})}
-             className="w-full"
-           >
-             Continue Journey
-           </GoldButton>
-        </div>
-      </div>
-    );
   };
 
   // --- Views ---
@@ -538,9 +467,6 @@ export default function App() {
 
     return (
       <div className="flex flex-col h-screen overflow-hidden bg-fantasy-dark">
-        {/* Motivation Modal */}
-        <MotivationModal />
-
         {/* Top Bar */}
         <header className="h-20 border-b border-fantasy-gold/10 bg-fantasy-dark/95 backdrop-blur flex items-center px-4 md:px-8 justify-between shrink-0 z-30 relative shadow-lg">
            <div className="flex items-center gap-6">

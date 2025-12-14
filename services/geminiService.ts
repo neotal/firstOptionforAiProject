@@ -38,17 +38,23 @@ export const generateQuestBreakdown = async (
   const ai = getAiClient();
   
   const prompt = `
-    You are a Gamification Quest Master. 
+    You are an Expert Mentor and Gamification Quest Master. 
     Analyze the following task description ${file ? "and the attached file" : ""}: "${taskDescription}".
     
-    Break it down into exactly ${stepCount} distinct, actionable steps (sub-tasks).
+    The user is a complete beginner who feels overwhelmed and desperate for help. They know nothing about how to start or what to do.
+    
+    Break the task down into exactly ${stepCount} distinct steps.
     
     IMPORTANT: Detect the language of the task description/file. 
     If the task description is in Hebrew, the Title, Step Titles, and Descriptions MUST be in Hebrew.
     If it is in English, they must be in English.
 
-    Create a catchy "Quest Title" for the overall project.
-    For each step, provide a title, a detailed description of what to do, and a list of recommended tools or resources (just names).
+    Create a catchy "Quest Title".
+    
+    For each step:
+    1. Title: A short, action-oriented title.
+    2. Description: This must be EXTENSIVE, DETAILED, and INSTRUCTIONAL. Do not just say "Do X". Explain EXACTLY HOW to do "X". Assume the user needs hand-holding. Break the description down into practical mini-instructions or bullets within the text.
+    3. Tools: A list of specific tools or resources.
   `;
 
   const parts: any[] = [{ text: prompt }];
