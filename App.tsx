@@ -14,7 +14,7 @@ import {
   LayoutDashboard,
   Scroll,
   Gem,
-  Crown
+  Sparkles
 } from 'lucide-react';
 
 const MOCK_USER = {
@@ -25,10 +25,31 @@ const MOCK_USER = {
 
 // --- Fantasy Components ---
 
+const WizardHatIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M2 22h20" />
+    <path d="M12 2L4.5 22" />
+    <path d="M12 2l7.5 20" />
+    <path d="M12 2l3 9h-6l3-9" />
+    <path d="M6 16h12" /> 
+  </svg>
+);
+
 const Divider = () => (
-  <div className="flex items-center justify-center w-full py-6 opacity-80">
+  <div className="flex items-center justify-center w-full py-8 opacity-60">
     <div className="h-[1px] bg-gradient-to-r from-transparent via-fantasy-gold to-transparent w-full max-w-xs"></div>
-    <div className="mx-4 text-fantasy-gold transform rotate-45 border border-fantasy-gold w-3 h-3 bg-fantasy-dark"></div>
+    <div className="mx-4 text-fantasy-gold transform rotate-45 border border-fantasy-gold w-3 h-3 bg-fantasy-dark shadow-gold-glow"></div>
     <div className="h-[1px] bg-gradient-to-r from-transparent via-fantasy-gold to-transparent w-full max-w-xs"></div>
   </div>
 );
@@ -38,9 +59,10 @@ const GoldButton = ({ onClick, children, disabled, className = "" }: any) => (
     onClick={onClick}
     disabled={disabled}
     className={`
-      relative group px-8 py-3 overflow-hidden border border-fantasy-gold/50 
-      text-fantasy-gold font-royal tracking-widest uppercase text-sm
-      hover:border-fantasy-gold hover:text-white hover:shadow-gold-glow hover:bg-fantasy-gold/10
+      relative group px-8 py-3 overflow-hidden rounded-sm
+      border border-fantasy-gold/40 bg-fantasy-primary/50 backdrop-blur-sm
+      text-fantasy-gold font-royal tracking-[0.15em] uppercase text-sm font-bold
+      hover:border-fantasy-gold hover:text-white hover:shadow-gold-glow hover:bg-fantasy-gold/20
       transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
       ${className}
     `}
@@ -51,13 +73,17 @@ const GoldButton = ({ onClick, children, disabled, className = "" }: any) => (
 );
 
 const Logo = () => (
-  <div className="flex flex-col items-center select-none group cursor-pointer">
-    <div className="flex items-center gap-2 text-fantasy-gold mb-1">
-      <Crown size={24} className="group-hover:drop-shadow-[0_0_8px_rgba(197,160,89,0.8)] transition-all" />
-      <span className="font-royal font-bold text-2xl tracking-[0.2em] text-fantasy-gold-light gold-text-shadow">QUESTLOG</span>
+  <div className="flex flex-col items-center select-none group cursor-pointer p-2">
+    <div className="flex items-center gap-3 text-fantasy-gold mb-1">
+      <div className="relative">
+        <WizardHatIcon size={32} className="text-fantasy-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" />
+        <div className="absolute -top-1 -right-1 text-white animate-pulse"><Sparkles size={12} /></div>
+      </div>
+      <span className="font-royal font-bold text-3xl tracking-[0.15em] text-white gold-text-shadow bg-clip-text text-transparent bg-gradient-to-b from-fantasy-gold-light to-fantasy-gold">
+        JOURNEYFY
+      </span>
     </div>
-    <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-fantasy-gold/50 to-transparent"></div>
-    <span className="text-[10px] uppercase tracking-[0.5em] text-fantasy-text-muted mt-1 font-body">Journey Within</span>
+    <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-blue-400/50 to-transparent mt-1"></div>
   </div>
 );
 
@@ -163,79 +189,94 @@ export default function App() {
   // --- Views ---
 
   const renderLanding = () => (
-    <div className="flex flex-col min-h-screen relative bg-fantasy-dark">
+    <div className="flex flex-col min-h-screen relative bg-fantasy-dark overflow-hidden">
       {/* Hero Background */}
-      <div className="absolute inset-0 bg-mountain-hero bg-cover bg-center bg-no-repeat bg-fixed opacity-60 z-0 pointer-events-none"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-fantasy-dark via-transparent to-fantasy-dark/80 z-0 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-mountain-hero bg-cover bg-center bg-no-repeat bg-fixed opacity-70 z-0"></div>
+      <div className="absolute inset-0 bg-blue-900/20 mix-blend-overlay z-0"></div>
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 z-0 animate-pulse"></div>
 
       <nav className="p-8 flex justify-between items-center z-10 relative">
         <Logo />
-        <GoldButton onClick={() => setView('dashboard')}>Enter Realm</GoldButton>
+        <GoldButton onClick={() => setView('dashboard')}>Open Grimoire</GoldButton>
       </nav>
 
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative z-10">
-        <div className="max-w-4xl space-y-8 animate-[fadeIn_1s_ease-out]">
-           <h1 className="text-5xl md:text-7xl font-royal font-bold text-fantasy-gold-light mb-4 drop-shadow-2xl">
-             Forge Your Legend
-           </h1>
+        <div className="max-w-4xl space-y-10 animate-[fadeIn_1s_ease-out] bg-fantasy-dark/40 p-12 rounded-2xl backdrop-blur-sm border border-white/5 shadow-2xl">
+           <div className="space-y-4">
+             <h1 className="text-5xl md:text-7xl font-royal font-bold text-white mb-2 drop-shadow-lg tracking-wide">
+               Master Your <span className="text-fantasy-gold">Journey</span>
+             </h1>
+             <p className="text-lg md:text-xl text-blue-200 font-royal tracking-widest uppercase opacity-80">
+               Gamified Productivity for the Modern Mage
+             </p>
+           </div>
+           
            <Divider />
-           <p className="text-xl md:text-2xl text-fantasy-text font-body max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-             Turn the mundane into the mythical. <br/>
-             Your tasks are not mere chores, but a journey awaiting a hero.
+           
+           <p className="text-xl text-fantasy-text font-body max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+             Transform mundane tasks into epic quests. <br/>
+             Consult the Oracle, gain XP, and conquer your to-do list.
            </p>
 
-           <div className="pt-12">
-             <GoldButton onClick={() => setView('dashboard')} className="px-12 py-4 text-lg border-2">
-               Begin Your Quest
+           <div className="pt-8">
+             <GoldButton onClick={() => setView('dashboard')} className="px-12 py-5 text-lg border-2 bg-fantasy-dark/80 hover:bg-fantasy-gold/20">
+               Summon Your Quests
              </GoldButton>
            </div>
         </div>
       </div>
-      
-      {/* Bottom border graphic */}
-      <div className="h-2 w-full bg-gradient-to-r from-fantasy-dark via-fantasy-gold to-fantasy-dark relative z-20"></div>
     </div>
   );
 
   const renderDashboard = () => (
-    <div className="min-h-screen flex flex-col bg-fantasy-dark bg-parchment relative">
-       {/* Background Noise/Scratch effect */}
-       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] opacity-20 pointer-events-none"></div>
+    <div className="min-h-screen flex flex-col bg-fantasy-dark relative">
+       {/* Background */}
+       <div className="absolute inset-0 bg-mountain-hero bg-cover bg-center opacity-30 fixed"></div>
+       <div className="absolute inset-0 bg-gradient-to-b from-fantasy-dark via-blue-900/20 to-fantasy-dark fixed"></div>
+       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 fixed pointer-events-none"></div>
 
-       <nav className="h-24 border-b border-fantasy-gold/20 bg-fantasy-dark/90 backdrop-blur-md flex items-center px-8 justify-between shrink-0 sticky top-0 z-40 shadow-lg">
+       <nav className="h-24 border-b border-fantasy-gold/10 bg-fantasy-dark/95 backdrop-blur-md flex items-center px-8 justify-between shrink-0 sticky top-0 z-40 shadow-lg">
           <div onClick={() => setView('landing')}><Logo /></div>
           <div className="flex items-center gap-6">
              <div className="hidden md:flex flex-col items-end">
-                <span className="text-fantasy-gold text-xs font-royal tracking-widest">Traveler Level</span>
-                <span className="text-fantasy-text font-body">{MOCK_USER.level}</span>
+                <span className="text-fantasy-gold text-xs font-royal tracking-widest uppercase">Mage Level</span>
+                <span className="text-white font-body text-lg font-bold">{MOCK_USER.level}</span>
              </div>
-             <div className="w-10 h-10 rounded-full border border-fantasy-gold/50 bg-fantasy-blue flex items-center justify-center text-fantasy-gold shadow-gold-glow">
-                <Crown size={18} />
+             <div className="w-12 h-12 rounded-full border-2 border-fantasy-gold/30 bg-fantasy-primary flex items-center justify-center text-fantasy-gold shadow-gold-glow relative overflow-hidden group">
+                <div className="absolute inset-0 bg-fantasy-gold/10 group-hover:bg-fantasy-gold/20 transition-colors"></div>
+                <WizardHatIcon size={20} />
              </div>
           </div>
        </nav>
 
-       <div className="max-w-6xl mx-auto w-full py-12 px-6 flex-1 relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-fantasy-gold/20 pb-6">
+       <div className="max-w-7xl mx-auto w-full py-12 px-6 flex-1 relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-fantasy-gold/20 pb-6 gap-4">
             <div>
-              <h2 className="text-3xl font-royal text-fantasy-gold-light mb-2">Quest Board</h2>
-              <p className="text-fantasy-text-muted font-body italic">Current undertakings and available missions.</p>
+              <h2 className="text-4xl font-royal text-white mb-2 gold-text-shadow">Quest Board</h2>
+              <p className="text-blue-200 font-body text-lg">Your active scrolls and completed chronicles.</p>
             </div>
             <GoldButton onClick={() => setView('new-quest')}>
-              <Plus size={16} /> New Contract
+              <Plus size={16} /> Inscribe New Quest
             </GoldButton>
           </div>
 
           {quests.length === 0 ? (
-            <div className="border border-fantasy-gold/30 bg-fantasy-blue/30 p-20 text-center rounded-sm relative overflow-hidden group">
-              <div className="absolute inset-0 bg-fantasy-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-              <Scroll className="mx-auto w-16 h-16 text-fantasy-gold/50 mb-6" strokeWidth={1} />
-              <h3 className="text-xl font-royal text-fantasy-gold mb-3">No Active Contracts</h3>
-              <p className="text-fantasy-text-muted mb-8 font-body">The realm is at peace... perhaps too peaceful.</p>
-              <button onClick={() => setView('new-quest')} className="text-fantasy-gold underline hover:text-white transition-colors font-royal tracking-widest text-sm">Create New Quest</button>
+            <div className="border border-fantasy-gold/20 bg-fantasy-primary/60 p-24 text-center rounded-lg relative overflow-hidden group backdrop-blur-sm shadow-card max-w-2xl mx-auto">
+              <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+              <div className="w-20 h-20 bg-fantasy-dark/50 rounded-full flex items-center justify-center mx-auto mb-6 border border-fantasy-gold/30">
+                 <Scroll className="w-10 h-10 text-fantasy-gold/70" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-2xl font-royal text-white mb-3">Your Chronicle is Empty</h3>
+              <p className="text-blue-200 mb-8 font-body leading-relaxed">
+                The pages are blank. A hero must act to create history. <br/>
+                What challenge awaits you today?
+              </p>
+              <button onClick={() => setView('new-quest')} className="text-fantasy-gold hover:text-white transition-colors font-royal tracking-widest text-sm border-b border-fantasy-gold pb-1 hover:border-white">
+                Start a Journey
+              </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {quests.map(quest => (
                 <div 
                   key={quest.id} 
@@ -244,32 +285,28 @@ export default function App() {
                     setSelectedMapStepIndex(quest.currentStepIndex);
                     setView('active-quest');
                   }}
-                  className="relative bg-fantasy-blue/40 border border-fantasy-gold/30 p-8 cursor-pointer transition-all hover:bg-fantasy-blue/60 hover:border-fantasy-gold group"
+                  className="relative bg-fantasy-primary/80 border border-fantasy-gold/10 p-8 cursor-pointer transition-all hover:-translate-y-1 hover:border-fantasy-gold/50 hover:shadow-gold-glow group rounded-md overflow-hidden backdrop-blur-md"
                 >
-                  {/* Decorative corners */}
-                  <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-fantasy-gold"></div>
-                  <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-fantasy-gold"></div>
-                  <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-fantasy-gold"></div>
-                  <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-fantasy-gold"></div>
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-fantasy-gold/50 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
 
                   <div className="flex justify-between items-start mb-6">
-                    <div className={`px-3 py-1 font-royal text-[10px] tracking-widest border uppercase ${quest.isCompleted ? 'border-green-800 text-green-500 bg-green-900/20' : 'border-fantasy-gold/50 text-fantasy-gold bg-fantasy-gold/10'}`}>
-                      {quest.isCompleted ? 'Completed' : 'Active'}
+                    <div className={`px-3 py-1 font-royal text-[10px] tracking-widest border rounded-full uppercase font-bold ${quest.isCompleted ? 'border-green-500/30 text-green-400 bg-green-900/20' : 'border-blue-400/30 text-blue-300 bg-blue-900/20'}`}>
+                      {quest.isCompleted ? 'Fulfilled' : 'In Progress'}
                     </div>
-                    <Gem className="text-fantasy-gold opacity-50 group-hover:opacity-100 transition-opacity" size={20} />
+                    <Gem className="text-fantasy-gold opacity-60 group-hover:opacity-100 transition-opacity drop-shadow-md" size={24} />
                   </div>
                   
-                  <h3 className="text-xl font-royal mb-4 text-fantasy-text-muted group-hover:text-fantasy-gold-light transition-colors truncate">{quest.title}</h3>
+                  <h3 className="text-xl font-royal mb-4 text-white group-hover:text-fantasy-gold transition-colors truncate leading-tight">{quest.title}</h3>
                   
-                  <div className="w-full bg-black/50 border border-fantasy-gold/20 h-1 mb-4">
+                  <div className="w-full bg-fantasy-dark border border-white/5 h-2 rounded-full mb-4 overflow-hidden">
                     <div 
-                      className={`h-full transition-all duration-1000 ${quest.isCompleted ? 'bg-green-600' : 'bg-fantasy-gold'}`}
+                      className={`h-full transition-all duration-1000 ${quest.isCompleted ? 'bg-green-500' : 'bg-gradient-to-r from-fantasy-gold-dim to-fantasy-gold'}`}
                       style={{ width: `${(quest.steps.filter(s => s.isCompleted).length / quest.steps.length) * 100}%` }}
                     />
                   </div>
                   
-                  <div className="flex justify-between text-xs text-fantasy-text-muted font-body">
-                    <span>{quest.steps.length} Stages</span>
+                  <div className="flex justify-between text-xs text-blue-300 font-body opacity-80">
+                    <span>{quest.steps.length} Phases</span>
                     <span>{new Date(quest.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -282,87 +319,94 @@ export default function App() {
 
   const renderNewQuest = () => (
     <div className="min-h-screen flex flex-col bg-fantasy-dark relative">
-       {/* Background Noise */}
-       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+       {/* Background */}
+       <div className="absolute inset-0 bg-mountain-hero bg-cover bg-center opacity-20 fixed"></div>
+       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 fixed pointer-events-none"></div>
 
-      <nav className="p-6 border-b border-fantasy-gold/10 bg-fantasy-dark/95 z-10 flex justify-center">
+      <nav className="p-6 border-b border-fantasy-gold/10 bg-fantasy-dark/95 z-10 flex justify-center backdrop-blur-md sticky top-0">
          <Logo />
       </nav>
       
-      <div className="flex-1 flex items-center justify-center p-4 z-10">
-        <div className="max-w-3xl w-full">
-          <button onClick={() => setView('dashboard')} className="text-fantasy-gold/70 hover:text-fantasy-gold mb-8 flex items-center gap-2 font-royal text-xs uppercase tracking-widest transition-colors">
-            <ChevronRight className="rotate-180" size={14} /> Return to Map
+      <div className="flex-1 flex items-center justify-center p-4 z-10 py-12">
+        <div className="max-w-4xl w-full">
+          <button onClick={() => setView('dashboard')} className="text-fantasy-gold/70 hover:text-fantasy-gold mb-8 flex items-center gap-2 font-royal text-xs uppercase tracking-widest transition-colors pl-2">
+            <ChevronRight className="rotate-180" size={14} /> Back to Board
           </button>
           
-          <div className="bg-fantasy-blue/20 border border-fantasy-gold/30 p-10 md:p-12 relative backdrop-blur-sm">
-            {/* Ornate border top */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-fantasy-dark px-4 border border-fantasy-gold/30 text-fantasy-gold font-royal text-xs tracking-widest uppercase">
-               New Quest Scroll
+          <div className="bg-fantasy-primary/90 border border-fantasy-gold/20 p-10 md:p-16 relative backdrop-blur-xl shadow-2xl rounded-sm">
+            {/* Corner decorations */}
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-fantasy-gold/30"></div>
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-fantasy-gold/30"></div>
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-fantasy-gold/30"></div>
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-fantasy-gold/30"></div>
+
+            <div className="text-center mb-10">
+               <h2 className="text-3xl font-royal text-fantasy-gold mb-2">Inscription Ritual</h2>
+               <p className="text-blue-200 font-body">Define the parameters of your next undertaking.</p>
             </div>
             
-            <div className="space-y-10">
+            <div className="space-y-12">
               <div>
-                <label className="block text-fantasy-gold text-xs font-royal tracking-widest mb-4 uppercase text-center">Describe Your Mission</label>
+                <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Describe Your Mission</label>
                 <textarea 
                   value={taskInput}
                   onChange={(e) => setTaskInput(e.target.value)}
-                  placeholder="E.g., Master the art of Python, Organize the Grand Archive (Garage), Plan the journey to the Western Lands..."
-                  className="w-full h-32 bg-fantasy-dark/50 border border-fantasy-gold/20 p-6 text-fantasy-text font-body text-lg focus:border-fantasy-gold focus:outline-none transition-colors resize-none placeholder-fantasy-text-muted/30 text-center"
+                  placeholder="What feat must be accomplished? (e.g. 'Learn React Hooks', 'Clean the garage', 'Plan a vacation')"
+                  className="w-full h-40 bg-fantasy-dark/50 border border-fantasy-gold/20 p-6 text-white font-body text-lg focus:border-fantasy-gold/60 focus:ring-1 focus:ring-fantasy-gold/30 focus:outline-none transition-all resize-none placeholder-white/20 text-center rounded-md"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                  <div>
-                    <label className="block text-fantasy-gold text-xs font-royal tracking-widest mb-4 uppercase text-center">Journey Length</label>
+                    <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Quest Duration</label>
                     <div className="flex gap-4">
                       <button 
                         onClick={() => setStepCount(5)}
-                        className={`flex-1 py-4 border font-royal text-xs uppercase tracking-widest transition-all ${stepCount === 5 ? 'border-fantasy-gold text-fantasy-gold bg-fantasy-gold/10' : 'border-fantasy-gold/20 text-fantasy-text-muted hover:border-fantasy-gold/50'}`}
+                        className={`flex-1 py-5 border rounded-sm font-royal text-xs uppercase tracking-widest transition-all ${stepCount === 5 ? 'border-fantasy-gold text-fantasy-gold bg-fantasy-gold/10 shadow-gold-glow' : 'border-fantasy-gold/10 text-fantasy-text-muted hover:border-fantasy-gold/30 hover:bg-white/5'}`}
                       >
-                        Short Quest (5)
+                        Short (5 Steps)
                       </button>
                       <button 
                         onClick={() => setStepCount(10)}
-                        className={`flex-1 py-4 border font-royal text-xs uppercase tracking-widest transition-all ${stepCount === 10 ? 'border-fantasy-gold text-fantasy-gold bg-fantasy-gold/10' : 'border-fantasy-gold/20 text-fantasy-text-muted hover:border-fantasy-gold/50'}`}
+                        className={`flex-1 py-5 border rounded-sm font-royal text-xs uppercase tracking-widest transition-all ${stepCount === 10 ? 'border-fantasy-gold text-fantasy-gold bg-fantasy-gold/10 shadow-gold-glow' : 'border-fantasy-gold/10 text-fantasy-text-muted hover:border-fantasy-gold/30 hover:bg-white/5'}`}
                       >
-                        Epic Saga (10)
+                        Epic (10 Steps)
                       </button>
                     </div>
                  </div>
                  
                  <div>
-                    <label className="block text-fantasy-gold text-xs font-royal tracking-widest mb-4 uppercase text-center">Choose Your Hero</label>
-                    <div className="relative">
+                    <label className="block text-white text-xs font-royal tracking-[0.2em] mb-4 uppercase text-center opacity-80">Select Avatar</label>
+                    <div className="relative group">
                       <select 
                         value={selectedAvatar}
                         onChange={(e) => setSelectedAvatar(e.target.value as AvatarType)}
-                        className="w-full py-4 px-6 bg-fantasy-dark/50 border border-fantasy-gold/20 text-fantasy-text focus:outline-none focus:border-fantasy-gold font-royal text-xs uppercase tracking-widest appearance-none cursor-pointer hover:bg-fantasy-gold/5 transition-colors text-center"
+                        className="w-full py-5 px-6 bg-fantasy-dark/50 border border-fantasy-gold/20 text-white focus:outline-none focus:border-fantasy-gold/50 font-royal text-xs uppercase tracking-widest appearance-none cursor-pointer hover:bg-fantasy-dark/70 transition-colors text-center rounded-sm"
                       >
                         {Object.values(AvatarType).map(type => (
                           <option key={type} value={type}>{type}</option>
                         ))}
                       </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-fantasy-gold pointer-events-none">▼</div>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-fantasy-gold/50 pointer-events-none group-hover:text-fantasy-gold transition-colors">▼</div>
                     </div>
                  </div>
               </div>
 
               {error && (
-                <div className="bg-red-900/10 border border-red-500/20 p-4 flex items-center justify-center gap-3 text-red-400 font-body text-sm">
+                <div className="bg-red-500/10 border border-red-500/20 p-4 flex items-center justify-center gap-3 text-red-300 font-body text-sm rounded-md">
                   <AlertCircle size={16} />
                   <span>{error}</span>
                 </div>
               )}
 
-              <div className="flex justify-center pt-4">
+              <div className="flex justify-center pt-6">
                 <GoldButton 
                   onClick={handleCreateQuest}
                   disabled={isGenerating || !taskInput}
-                  className="w-full md:w-auto px-16"
+                  className="w-full md:w-auto px-20 py-5 text-base"
                 >
-                  {isGenerating ? <Loader2 className="animate-spin" /> : <Sword size={18} />}
-                  {isGenerating ? 'Consulting the Oracle...' : 'Embark'}
+                  {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles size={18} />}
+                  {isGenerating ? 'Divining Path...' : 'Begin Journey'}
                 </GoldButton>
               </div>
             </div>
@@ -379,28 +423,28 @@ export default function App() {
     return (
       <div className="flex flex-col h-screen overflow-hidden bg-fantasy-dark">
         {/* Top Bar */}
-        <header className="h-20 border-b border-fantasy-gold/20 bg-fantasy-dark flex items-center px-4 md:px-8 justify-between shrink-0 z-30 relative shadow-md">
+        <header className="h-20 border-b border-fantasy-gold/10 bg-fantasy-dark/95 backdrop-blur flex items-center px-4 md:px-8 justify-between shrink-0 z-30 relative shadow-lg">
            <div className="flex items-center gap-6">
-             <button onClick={() => setView('dashboard')} className="p-2 hover:bg-fantasy-blue/50 text-fantasy-gold/70 hover:text-fantasy-gold transition-all rounded-full border border-transparent hover:border-fantasy-gold/30">
+             <button onClick={() => setView('dashboard')} className="p-2 hover:bg-fantasy-primary text-fantasy-gold/70 hover:text-fantasy-gold transition-all rounded-full border border-transparent hover:border-fantasy-gold/30">
                <LayoutDashboard size={20} />
              </button>
              <div className="flex flex-col">
-                <span className="text-[10px] text-fantasy-gold font-royal uppercase tracking-widest">Current Quest</span>
-                <h1 className="font-royal text-lg text-fantasy-text truncate max-w-[200px] md:max-w-md">{activeQuest.title}</h1>
+                <span className="text-[10px] text-fantasy-gold font-royal uppercase tracking-widest opacity-80">Current Journey</span>
+                <h1 className="font-royal text-lg text-white tracking-wide truncate max-w-[200px] md:max-w-md">{activeQuest.title}</h1>
              </div>
            </div>
            
            <div className="flex items-center gap-6">
              <div className="hidden md:flex flex-col items-end">
-               <span className="text-fantasy-gold text-[10px] font-royal tracking-widest uppercase mb-1">Progress</span>
-               <div className="w-32 h-1 bg-fantasy-blue border border-fantasy-gold/30">
+               <span className="text-fantasy-gold text-[10px] font-royal tracking-widest uppercase mb-1 opacity-80">Completion</span>
+               <div className="w-32 h-1.5 bg-fantasy-primary rounded-full overflow-hidden border border-white/5">
                   <div 
-                    className="h-full bg-fantasy-gold shadow-gold-glow"
+                    className="h-full bg-gradient-to-r from-fantasy-gold-dim to-fantasy-gold shadow-gold-glow"
                     style={{ width: `${(activeQuest.steps.filter(s => s.isCompleted).length / activeQuest.steps.length) * 100}%` }}
                   ></div>
                </div>
              </div>
-             <div className="w-12 h-12 rounded-full border border-fantasy-gold/50 flex items-center justify-center text-2xl bg-fantasy-blue shadow-gold-glow">
+             <div className="w-10 h-10 rounded-full border border-fantasy-gold/40 flex items-center justify-center text-xl bg-fantasy-primary shadow-blue-glow">
                {activeQuest.avatar === AvatarType.WARRIOR ? '⚔️' : '🔮'}
              </div>
            </div>
@@ -409,8 +453,10 @@ export default function App() {
         <div className="flex flex-1 overflow-hidden relative">
           {/* Main Map Area */}
           <main className="flex-1 overflow-y-auto bg-fantasy-dark relative">
-             <div className="absolute inset-0 bg-mountain-hero bg-cover bg-center opacity-20 pointer-events-none grayscale"></div>
-             <div className="max-w-5xl mx-auto px-4 min-h-full relative z-10">
+             <div className="absolute inset-0 bg-mountain-hero bg-cover bg-center opacity-40 fixed grayscale-[30%]"></div>
+             <div className="absolute inset-0 bg-blue-mist fixed"></div>
+             
+             <div className="max-w-5xl mx-auto px-4 min-h-full relative z-10 py-8">
                <QuestMap 
                  quest={activeQuest} 
                  onSelectStep={setSelectedMapStepIndex}
@@ -420,9 +466,9 @@ export default function App() {
           </main>
 
           {/* Right Chat Panel */}
-          <aside className={`fixed inset-y-0 right-0 w-full md:w-[450px] transform transition-transform duration-500 z-40 md:relative md:transform-none border-l border-fantasy-gold/20 bg-fantasy-blue/95 backdrop-blur-xl ${selectedMapStepIndex !== null ? 'translate-x-0' : 'translate-x-full'}`}>
+          <aside className={`fixed inset-y-0 right-0 w-full md:w-[450px] transform transition-transform duration-500 z-40 md:relative md:transform-none border-l border-fantasy-gold/10 bg-fantasy-primary/95 backdrop-blur-xl shadow-2xl ${selectedMapStepIndex !== null ? 'translate-x-0' : 'translate-x-full'}`}>
              <button 
-               className="md:hidden absolute top-4 left-4 z-50 bg-fantasy-dark border border-fantasy-gold p-2 text-fantasy-gold rounded-full"
+               className="md:hidden absolute top-4 left-4 z-50 bg-fantasy-dark border border-fantasy-gold p-2 text-fantasy-gold rounded-full shadow-lg"
                onClick={() => setSelectedMapStepIndex(-1)} 
              >
                <ChevronRight />

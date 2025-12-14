@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QuestLog AI</title>
+    <title>Journeyfy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,22 +18,26 @@
             },
             colors: {
               fantasy: {
-                gold: '#c5a059',
-                'gold-light': '#e6c985',
+                gold: '#d4af37', // Brighter Gold
+                'gold-light': '#f3e5ab', // Champagne
                 'gold-dim': '#8a6e3e',
-                dark: '#050505',
-                blue: '#0f172a', // Slate 900
-                'blue-light': '#1e293b', // Slate 800
-                text: '#d1d5db',
-                'text-muted': '#9ca3af'
+                dark: '#0f172a', // Slate 900 (Main Background)
+                primary: '#1e293b', // Slate 800 (Cards)
+                secondary: '#334155', // Slate 700
+                accent: '#3b82f6', // Royal Blue
+                text: '#e2e8f0', // Slate 200 (Readable Text)
+                'text-muted': '#94a3b8' // Slate 400
               }
             },
             backgroundImage: {
-              'mountain-hero': "linear-gradient(to bottom, rgba(5,5,5,0.3), rgba(5,5,5,1)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop')",
+              'mountain-hero': "linear-gradient(to bottom, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop')",
               'parchment': "url('https://www.transparenttextures.com/patterns/stardust.png')",
+              'blue-mist': "radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, rgba(15, 23, 42, 0) 70%)",
             },
             boxShadow: {
-              'gold-glow': '0 0 15px rgba(197, 160, 89, 0.3)',
+              'gold-glow': '0 0 20px rgba(212, 175, 55, 0.2)',
+              'blue-glow': '0 0 20px rgba(59, 130, 246, 0.2)',
+              'card': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15)'
             }
           }
         }
@@ -41,33 +45,28 @@
     </script>
     <style>
       body {
-        background-color: #050505;
-        color: #d1d5db;
+        background-color: #0f172a;
+        color: #e2e8f0;
         font-family: 'Fauna One', serif;
       }
       /* Custom scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 10px;
       }
       ::-webkit-scrollbar-track {
         background: #0f172a; 
       }
       ::-webkit-scrollbar-thumb {
         background: #334155; 
-        border: 1px solid #0f172a;
-        border-radius: 4px;
+        border: 2px solid #0f172a;
+        border-radius: 6px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #c5a059; 
+        background: #d4af37; 
       }
       
       .gold-text-shadow {
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-      }
-      
-      .gold-border-gradient {
-        border-image: linear-gradient(to right, transparent, #c5a059, transparent) 1;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
       }
     </style>
   <script type="importmap">
