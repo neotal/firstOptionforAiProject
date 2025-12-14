@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, Step } from '../types';
-import { Send, Bot, User, Loader2, Scroll, CheckCircle, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Loader2, Scroll, CheckCircle, Sparkles, RotateCcw } from 'lucide-react';
 import { getStepChatResponse } from '../services/geminiService';
 
 interface ChatPanelProps {
   step: Step;
   questTitle: string;
-  onCompleteStep: () => void;
+  onToggleCompletion: () => void;
   isActiveStep: boolean;
   isQuestCompleted: boolean;
   addMessageToStep: (text: string, role: 'user' | 'model') => void;
@@ -15,7 +15,7 @@ interface ChatPanelProps {
 export const ChatPanel: React.FC<ChatPanelProps> = ({ 
   step, 
   questTitle, 
-  onCompleteStep, 
+  onToggleCompletion, 
   isActiveStep,
   isQuestCompleted,
   addMessageToStep
@@ -86,7 +86,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
         {isActiveStep && !isQuestCompleted && !step.isCompleted && (
            <button 
-             onClick={onCompleteStep}
+             onClick={onToggleCompletion}
              className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-fantasy-gold/10 to-fantasy-gold/20 hover:from-fantasy-gold/20 hover:to-fantasy-gold/30 border border-fantasy-gold/40 text-fantasy-gold font-royal text-xs py-4 tracking-widest uppercase transition-all duration-300 hover:shadow-gold-glow group rounded-sm"
            >
              <CheckCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -94,9 +94,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
            </button>
         )}
          {step.isCompleted && (
+           <div className="flex flex-col gap-3">
              <div className="w-full flex items-center justify-center gap-2 text-green-400 font-royal text-[10px] py-4 border border-green-500/30 bg-green-900/10 uppercase tracking-widest rounded-sm">
-             <CheckCircle className="w-4 h-4" />
-             Step Completed
+               <CheckCircle className="w-4 h-4" />
+               Step Completed
+             </div>
+             <button 
+               onClick={onToggleCompletion}
+               className="w-full flex items-center justify-center gap-2 text-fantasy-text-muted hover:text-white font-royal text-[10px] uppercase tracking-widest hover:underline decoration-fantasy-gold/50 underline-offset-4 transition-all opacity-70 hover:opacity-100"
+             >
+               <RotateCcw className="w-3 h-3" /> Reopen Step
+             </button>
            </div>
         )}
       </div>

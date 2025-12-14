@@ -155,31 +155,48 @@ export default function App() {
     }
   };
 
-  const handleCompleteStep = (questId: string) => {
+  const handleToggleStepCompletion = (questId: string, stepIndex: number) => {
     setQuests(prev => prev.map(q => {
       if (q.id !== questId) return q;
       
-      const nextIndex = q.currentStepIndex + 1;
-      const isFinished = nextIndex >= q.steps.length;
-      
+      // 1. Toggle the completion status of the target step
       const updatedSteps = [...q.steps];
-      updatedSteps[q.currentStepIndex] = {
-        ...updatedSteps[q.currentStepIndex],
-        isCompleted: true
+      const newStatus = !updatedSteps[stepIndex].isCompleted;
+      updatedSteps[stepIndex] = {
+        ...updatedSteps[stepIndex],
+        isCompleted: newStatus
       };
+
+      // 2. Recalculate the "Current Progress Index" (Avatar position)
+      // The current step is the FIRST incomplete step.
+      let newCurrentIndex = updatedSteps.findIndex(s => !s.isCompleted);
+      
+      // If all steps are completed (findIndex returns -1), set index to length (finished)
+      if (newCurrentIndex === -1) {
+        newCurrentIndex = updatedSteps.length;
+      }
+
+      // 3. Determine if the entire quest is finished
+      const isQuestFinished = newCurrentIndex === updatedSteps.length;
 
       return {
         ...q,
         steps: updatedSteps,
-        currentStepIndex: isFinished ? q.currentStepIndex : nextIndex,
-        isCompleted: isFinished
+        currentStepIndex: newCurrentIndex,
+        isCompleted: isQuestFinished
       };
     }));
-    
-    // Auto advance selection if not finished
+
+    // Optional: If we just COMPLETED a step (and it wasn't the last one), 
+    // we might want to automatically view the next step. 
+    // However, if we are UNDOING, we usually want to stay on the current view.
     const currentQ = quests.find(q => q.id === questId);
-    if (currentQ && currentQ.currentStepIndex < currentQ.steps.length - 1) {
-        setSelectedMapStepIndex(currentQ.currentStepIndex + 1);
+    if (currentQ && !currentQ.steps[stepIndex].isCompleted) {
+        // We are marking as complete
+        const nextIdx = stepIndex + 1;
+        if (nextIdx < currentQ.steps.length) {
+            setSelectedMapStepIndex(nextIdx);
+        }
     }
   };
 
@@ -524,7 +541,7 @@ export default function App() {
                  questTitle={activeQuest.title}
                  isActiveStep={selectedMapStepIndex === activeQuest.currentStepIndex}
                  isQuestCompleted={activeQuest.isCompleted}
-                 onCompleteStep={() => handleCompleteStep(activeQuest.id)}
+                 onToggleCompletion={() => handleToggleStepCompletion(activeQuest.id, selectedMapStepIndex)}
                  addMessageToStep={(text, role) => addMessageToStep(activeQuest.id, selectedMapStepIndex, text, role)}
                />
              )}
