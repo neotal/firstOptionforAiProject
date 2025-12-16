@@ -116,6 +116,7 @@ app.get('/api/quests', async (req, res) => {
     // Filter quests belonging to this user
     const userQuests = db.quests.filter(q => q.ownerId === userId);
     res.json(userQuests);
+    
   } catch (error) {
     res.status(500).json({ error: 'Failed to load quests' });
   }
@@ -127,6 +128,7 @@ app.post('/api/quests', async (req, res) => {
     const { taskDescription, stepCount, fileData, avatar, userId } = req.body;
 
     if (!userId) return res.status(401).json({ error: "User not authenticated" });
+    console.log("API_KEY =", process.env.API_KEY);
 
     const prompt = `
       You are an Expert Mentor and Gamification Quest Master. 
