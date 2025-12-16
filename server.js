@@ -5,9 +5,12 @@ import fs from 'fs/promises';
 import { GoogleGenAI, Type } from "@google/genai";
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import dotenv from 'dotenv';
+dotenv.config();
 // Environment setup
 const apiKey = process.env.API_KEY;
+  console.error(process.env.API_KEY);
+
 if (!apiKey) {
   console.error("API Key is missing! Please set process.env.API_KEY.");
   process.exit(1);
