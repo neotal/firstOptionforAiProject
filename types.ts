@@ -1,3 +1,11 @@
+
+export interface User {
+  id: string;
+  username: string;
+  name: string;
+  birthYear?: string;
+}
+
 export interface Message {
   role: 'user' | 'model';
   text: string;
@@ -23,6 +31,7 @@ export enum AvatarType {
 
 export interface Quest {
   id: string;
+  ownerId: string; // Links quest to specific user
   title: string;
   originalTask: string;
   createdAt: number;
@@ -33,4 +42,4 @@ export interface Quest {
   difficulty: '5' | '10';
 }
 
-export type ViewState = 'landing' | 'dashboard' | 'new-quest' | 'active-quest';
+export type ViewState = 'login' | 'register' | 'landing' | 'dashboard' | 'new-quest' | 'active-quest';

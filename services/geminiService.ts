@@ -19,8 +19,8 @@ async function fileToBase64(file: File): Promise<{ base64: string; mimeType: str
   });
 }
 
-export const fetchQuests = async (): Promise<Quest[]> => {
-  const res = await fetch(`${API_URL}/quests`);
+export const fetchQuests = async (userId: string): Promise<Quest[]> => {
+  const res = await fetch(`${API_URL}/quests?userId=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch quests");
   return res.json();
 };
@@ -28,6 +28,7 @@ export const fetchQuests = async (): Promise<Quest[]> => {
 export const createQuest = async (
   taskDescription: string, 
   stepCount: number,
+  userId: string,
   file?: File | null,
   avatar?: AvatarType
 ): Promise<Quest> => {
@@ -43,7 +44,8 @@ export const createQuest = async (
       taskDescription,
       stepCount,
       fileData,
-      avatar
+      avatar,
+      userId
     })
   });
 

@@ -5,12 +5,9 @@ import fs from 'fs/promises';
 import { GoogleGenAI, Type } from "@google/genai";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-dotenv.config();
+
 // Environment setup
 const apiKey = process.env.API_KEY;
-  console.error(process.env.API_KEY);
-
 if (!apiKey) {
   console.error("API Key is missing! Please set process.env.API_KEY.");
   process.exit(1);
@@ -22,7 +19,7 @@ const DB_FILE = 'database.json';
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '50mb' })); // Increased limit for file uploads
+app.use(express.json({ limit: '50mb' }));
 
 // AI Client
 const ai = new GoogleGenAI({ apiKey });
@@ -32,10 +29,14 @@ const ai = new GoogleGenAI({ apiKey });
 async function loadDb() {
   try {
     const data = await fs.readFile(DB_FILE, 'utf-8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    // Ensure structure exists
+    if (!parsed.users) parsed.users = [];
+    if (!parsed.quests) parsed.quests = [];
+    return parsed;
   } catch (error) {
-    // If file doesn't exist, return default structure
-    return { quests: [] };
+    // Return default structure if file missing
+    return { users: [], quests: [] };
   }
 }
 
@@ -43,22 +44,88 @@ async function saveDb(data) {
   await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-// --- API Endpoints ---
+// --- Auth Endpoints ---
 
-// 1. Get All Quests
+// Register
+app.post('/api/register', async (req, res) => {
+  try {
+    const { username, password, name, birthYear } = req.body;
+
+    if (!username || !password || !name) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const db = await loadDb();
+
+    // Check if user exists
+    if (db.users.find(u => u.username === username)) {
+      return res.status(409).json({ error: 'Username already taken' });
+    }
+
+    const newUser = {
+      id: crypto.randomUUID(),
+      username,
+      password, // Note: In a real production app, you MUST hash passwords (e.g., using bcrypt).
+      name,
+      birthYear
+    };
+
+    db.users.push(newUser);
+    await saveDb(db);
+
+    // Return user without password
+    const { password: _, ...userWithoutPass } = newUser;
+    res.json(userWithoutPass);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
+// Login
+app.post('/api/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const db = await loadDb();
+
+    const user = db.users.find(u => u.username === username && u.password === password);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const { password: _, ...userWithoutPass } = user;
+    res.json(userWithoutPass);
+
+  } catch (error) {
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// --- Quest Endpoints ---
+
+// 1. Get All Quests (Filtered by User ID)
 app.get('/api/quests', async (req, res) => {
   try {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: "User ID required" });
+
     const db = await loadDb();
-    res.json(db.quests);
+    // Filter quests belonging to this user
+    const userQuests = db.quests.filter(q => q.ownerId === userId);
+    res.json(userQuests);
   } catch (error) {
     res.status(500).json({ error: 'Failed to load quests' });
   }
 });
 
-// 2. Create New Quest (Generate Breakdown)
+// 2. Create New Quest
 app.post('/api/quests', async (req, res) => {
   try {
-    const { taskDescription, stepCount, fileData, avatar } = req.body;
+    const { taskDescription, stepCount, fileData, avatar, userId } = req.body;
+
+    if (!userId) return res.status(401).json({ error: "User not authenticated" });
 
     const prompt = `
       You are an Expert Mentor and Gamification Quest Master. 
@@ -118,6 +185,7 @@ app.post('/api/quests', async (req, res) => {
 
     const newQuest = {
       id: crypto.randomUUID(),
+      ownerId: userId, // Link to user
       title: generatedData.questTitle,
       originalTask: taskDescription || (fileData ? 'File Analysis' : 'New Quest'),
       createdAt: Date.now(),
@@ -134,7 +202,7 @@ app.post('/api/quests', async (req, res) => {
     };
 
     const db = await loadDb();
-    db.quests.unshift(newQuest); // Add to top
+    db.quests.unshift(newQuest);
     await saveDb(db);
 
     res.json(newQuest);
@@ -218,8 +286,6 @@ app.post('/api/quests/:id/step/:stepIndex/chat', async (req, res) => {
     });
 
     await saveDb(db);
-    
-    // Return the updated chat history
     res.json(step.chatHistory);
 
   } catch (error) {

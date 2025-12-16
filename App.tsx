@@ -1,7 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Quest, ViewState, Step, AvatarType } from './types';
+import { Quest, ViewState, Step, AvatarType, User } from './types';
 import { createQuest, fetchQuests, toggleStepCompletion, sendChatMessage } from './services/geminiService';
+import { loginUser, registerUser } from './services/authService';
 import { QuestMap } from './components/QuestMap';
 import { ChatPanel } from './components/ChatPanel';
 import { 
@@ -19,14 +20,12 @@ import {
   Paperclip,
   X,
   FileText,
-  Image as ImageIcon
+  Image as ImageIcon,
+  LogOut,
+  User as UserIcon,
+  Lock,
+  Calendar
 } from 'lucide-react';
-
-const MOCK_USER = {
-  name: "Traveler",
-  level: 5,
-  xp: 2400
-};
 
 // --- Fantasy Components ---
 
@@ -62,12 +61,13 @@ const Divider = () => (
   </div>
 );
 
-const GoldButton = ({ onClick, children, disabled, className = "" }: any) => (
+const GoldButton = ({ onClick, children, disabled, className = "", type = "button" }: any) => (
   <button 
+    type={type}
     onClick={onClick}
     disabled={disabled}
     className={`
-      relative group px-8 py-3 overflow-hidden rounded-sm
+      relative group px-8 py-3 overflow-hidden rounded-sm w-full md:w-auto
       border border-fantasy-gold/40 bg-fantasy-primary/50 backdrop-blur-sm
       text-fantasy-gold font-royal tracking-[0.15em] uppercase text-sm font-bold
       hover:border-fantasy-gold hover:text-white hover:shadow-gold-glow hover:bg-fantasy-gold/20
@@ -78,6 +78,25 @@ const GoldButton = ({ onClick, children, disabled, className = "" }: any) => (
     <div className="absolute inset-0 w-0 bg-fantasy-gold/10 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
     <span className="relative flex items-center justify-center gap-2">{children}</span>
   </button>
+);
+
+const FantasyInput = ({ label, type, value, onChange, placeholder, required = false, icon: Icon }: any) => (
+  <div className="mb-6">
+    <label className="block text-fantasy-gold text-xs font-royal tracking-[0.15em] mb-2 uppercase opacity-90">
+      {label} {required && <span className="text-red-400">*</span>}
+    </label>
+    <div className="relative">
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+        className="w-full bg-fantasy-dark/60 border border-fantasy-gold/30 px-4 py-3 pl-10 text-white font-body focus:outline-none focus:border-fantasy-gold focus:shadow-gold-glow transition-all rounded-sm placeholder-white/20"
+      />
+      {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 text-fantasy-gold/50" size={16} />}
+    </div>
+  </div>
 );
 
 const Logo = () => (
@@ -107,10 +126,16 @@ const getAvatarEmoji = (type: AvatarType) => {
 };
 
 export default function App() {
-  const [view, setView] = useState<ViewState>('landing');
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [view, setView] = useState<ViewState>('login');
   const [quests, setQuests] = useState<Quest[]>([]);
   const [activeQuestId, setActiveQuestId] = useState<string | null>(null);
   
+  // Auth Form State
+  const [authForm, setAuthForm] = useState({ username: '', password: '', name: '', birthYear: '' });
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
+
   // New Quest Form State
   const [taskInput, setTaskInput] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -125,12 +150,52 @@ export default function App() {
   
   const activeQuest = quests.find(q => q.id === activeQuestId);
 
-  // Load initial data from backend
+  // Load data when user logs in
   useEffect(() => {
-    fetchQuests()
-      .then(data => setQuests(data))
-      .catch(err => console.error("Could not load quests:", err));
-  }, []);
+    if (currentUser) {
+      fetchQuests(currentUser.id)
+        .then(data => setQuests(data))
+        .catch(err => console.error("Could not load quests:", err));
+    }
+  }, [currentUser]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuthLoading(true);
+    setAuthError(null);
+    try {
+      const user = await loginUser(authForm.username, authForm.password);
+      setCurrentUser(user);
+      setView('landing'); // Or dashboard directly
+      setAuthForm({ username: '', password: '', name: '', birthYear: '' });
+    } catch (err: any) {
+      setAuthError(err.message);
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuthLoading(true);
+    setAuthError(null);
+    try {
+      const user = await registerUser(authForm.username, authForm.password, authForm.name, authForm.birthYear);
+      setCurrentUser(user);
+      setView('landing');
+      setAuthForm({ username: '', password: '', name: '', birthYear: '' });
+    } catch (err: any) {
+      setAuthError(err.message);
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setView('login');
+    setQuests([]);
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -139,13 +204,12 @@ export default function App() {
   };
 
   const handleCreateQuest = async () => {
-    if (!taskInput.trim() && !selectedFile) return;
+    if ((!taskInput.trim() && !selectedFile) || !currentUser) return;
     setIsGenerating(true);
     setError(null);
 
     try {
-      // Changed: Call API instead of local service
-      const newQuest = await createQuest(taskInput, stepCount, selectedFile, selectedAvatar);
+      const newQuest = await createQuest(taskInput, stepCount, currentUser.id, selectedFile, selectedAvatar);
       
       setQuests(prev => [newQuest, ...prev]);
       setActiveQuestId(newQuest.id);
@@ -162,18 +226,12 @@ export default function App() {
   };
 
   const handleToggleStepCompletion = async (questId: string, stepIndex: number) => {
-    // Optimistic update (optional) or wait for server
-    // For safety, we wait for server to return updated quest object
     try {
       const updatedQuest = await toggleStepCompletion(questId, stepIndex);
       
       setQuests(prev => prev.map(q => q.id === questId ? updatedQuest : q));
 
-      // Auto-advance logic
-      if (!updatedQuest.steps[stepIndex].isCompleted) {
-        // We marked as incomplete? Do nothing.
-      } else {
-        // We marked as complete
+      if (updatedQuest.steps[stepIndex].isCompleted) {
         const nextIdx = stepIndex + 1;
         if (nextIdx < updatedQuest.steps.length) {
           setSelectedMapStepIndex(nextIdx);
@@ -185,9 +243,9 @@ export default function App() {
   };
 
   const handleAddMessageToStep = async (questId: string, stepIndex: number, text: string, role: 'user' | 'model') => {
-    if (role === 'model') return; // The API call handles adding both user and model messages
+    if (role === 'model') return;
 
-    // 1. Optimistic update for User message
+    // Optimistic
     setQuests(prev => prev.map(q => {
       if (q.id !== questId) return q;
       const updatedSteps = [...q.steps];
@@ -199,10 +257,9 @@ export default function App() {
     }));
 
     try {
-      // 2. Call API
       const updatedHistory = await sendChatMessage(questId, stepIndex, text);
 
-      // 3. Update with server response (which includes the AI reply)
+      // Update with server response
       setQuests(prev => prev.map(q => {
         if (q.id !== questId) return q;
         const updatedSteps = [...q.steps];
@@ -214,11 +271,149 @@ export default function App() {
       }));
     } catch (e) {
       console.error("Failed to send message", e);
-      // Optional: Add error message to chat
     }
   };
 
   // --- Views ---
+
+  const renderAuthBackground = () => (
+    <>
+      <div className="absolute inset-0 bg-mountain-hero bg-cover bg-center bg-no-repeat bg-fixed opacity-60 z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-fantasy-dark via-fantasy-dark/50 to-transparent z-0"></div>
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 z-0 animate-pulse"></div>
+    </>
+  );
+
+  const renderLogin = () => (
+    <div className="min-h-screen flex flex-col items-center justify-center relative bg-fantasy-dark p-4">
+      {renderAuthBackground()}
+      
+      <div className="w-full max-w-md bg-fantasy-primary/90 border border-fantasy-gold/30 p-8 rounded-sm backdrop-blur-md shadow-2xl relative z-10 animate-[fadeIn_0.5s_ease-out]">
+        <div className="mb-8"><Logo /></div>
+        
+        <h2 className="text-center text-white font-royal text-xl mb-6 tracking-widest uppercase">Enter the Realm</h2>
+
+        <form onSubmit={handleLogin}>
+          <FantasyInput 
+            label="Username" 
+            type="text" 
+            placeholder="Enter your hero name"
+            value={authForm.username}
+            onChange={(e: any) => setAuthForm({...authForm, username: e.target.value})}
+            required
+            icon={UserIcon}
+          />
+          <FantasyInput 
+            label="Password" 
+            type="password" 
+            placeholder="Secret runes..."
+            value={authForm.password}
+            onChange={(e: any) => setAuthForm({...authForm, password: e.target.value})}
+            required
+            icon={Lock}
+          />
+
+          {authError && (
+             <div className="mb-4 text-red-300 text-xs font-royal tracking-wide bg-red-900/20 border border-red-500/30 p-3 rounded flex items-center gap-2">
+               <AlertCircle size={14} /> {authError}
+             </div>
+          )}
+
+          <GoldButton 
+            type="submit" 
+            className="w-full mt-2" 
+            disabled={isAuthLoading || !authForm.username || !authForm.password}
+          >
+             {isAuthLoading ? <Loader2 className="animate-spin" /> : 'Login'}
+          </GoldButton>
+        </form>
+
+        <div className="mt-8 text-center border-t border-fantasy-gold/10 pt-4">
+          <p className="text-fantasy-text-muted text-sm font-body mb-2">New to the guild?</p>
+          <button 
+            onClick={() => { setView('register'); setAuthError(null); setAuthForm({username:'', password:'', name:'', birthYear:''}); }}
+            className="text-fantasy-gold hover:text-white font-royal text-xs uppercase tracking-widest transition-colors hover:underline underline-offset-4"
+          >
+            Create an Account
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderRegister = () => (
+    <div className="min-h-screen flex flex-col items-center justify-center relative bg-fantasy-dark p-4">
+      {renderAuthBackground()}
+      
+      <div className="w-full max-w-md bg-fantasy-primary/90 border border-fantasy-gold/30 p-8 rounded-sm backdrop-blur-md shadow-2xl relative z-10 animate-[fadeIn_0.5s_ease-out]">
+        <div className="mb-8"><Logo /></div>
+        
+        <h2 className="text-center text-white font-royal text-xl mb-6 tracking-widest uppercase">Join the Guild</h2>
+
+        <form onSubmit={handleRegister}>
+          <FantasyInput 
+            label="Hero Name (Username)" 
+            type="text" 
+            placeholder="Choose your identifier"
+            value={authForm.username}
+            onChange={(e: any) => setAuthForm({...authForm, username: e.target.value})}
+            required
+            icon={UserIcon}
+          />
+          <FantasyInput 
+            label="Secret Password" 
+            type="password" 
+            placeholder="Protect your account"
+            value={authForm.password}
+            onChange={(e: any) => setAuthForm({...authForm, password: e.target.value})}
+            required
+            icon={Lock}
+          />
+          <FantasyInput 
+            label="Real Name" 
+            type="text" 
+            placeholder="How shall we call you?"
+            value={authForm.name}
+            onChange={(e: any) => setAuthForm({...authForm, name: e.target.value})}
+            required
+            icon={Scroll}
+          />
+          <FantasyInput 
+            label="Birth Year (Optional)" 
+            type="number" 
+            placeholder="e.g. 1995"
+            value={authForm.birthYear}
+            onChange={(e: any) => setAuthForm({...authForm, birthYear: e.target.value})}
+            icon={Calendar}
+          />
+
+          {authError && (
+             <div className="mb-4 text-red-300 text-xs font-royal tracking-wide bg-red-900/20 border border-red-500/30 p-3 rounded flex items-center gap-2">
+               <AlertCircle size={14} /> {authError}
+             </div>
+          )}
+
+          <GoldButton 
+            type="submit" 
+            className="w-full mt-2" 
+            disabled={isAuthLoading || !authForm.username || !authForm.password || !authForm.name}
+          >
+             {isAuthLoading ? <Loader2 className="animate-spin" /> : 'Register'}
+          </GoldButton>
+        </form>
+
+        <div className="mt-8 text-center border-t border-fantasy-gold/10 pt-4">
+          <p className="text-fantasy-text-muted text-sm font-body mb-2">Already a member?</p>
+          <button 
+            onClick={() => { setView('login'); setAuthError(null); setAuthForm({username:'', password:'', name:'', birthYear:''}); }}
+            className="text-fantasy-gold hover:text-white font-royal text-xs uppercase tracking-widest transition-colors hover:underline underline-offset-4"
+          >
+            Login Here
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   const renderLanding = () => (
     <div className="flex flex-col min-h-screen relative bg-fantasy-dark overflow-hidden">
@@ -229,7 +424,13 @@ export default function App() {
 
       <nav className="p-8 flex justify-between items-center z-10 relative">
         <Logo />
-        <GoldButton onClick={() => setView('dashboard')}>Enter App</GoldButton>
+        <div className="flex items-center gap-4">
+          <div className="text-right hidden md:block">
+            <div className="text-fantasy-gold text-[10px] font-royal uppercase tracking-widest">Logged in as</div>
+            <div className="text-white font-body">{currentUser?.name}</div>
+          </div>
+          <GoldButton onClick={() => setView('dashboard')}>Enter App</GoldButton>
+        </div>
       </nav>
 
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative z-10">
@@ -271,13 +472,18 @@ export default function App() {
           <div onClick={() => setView('landing')}><Logo /></div>
           <div className="flex items-center gap-6">
              <div className="hidden md:flex flex-col items-end">
-                <span className="text-fantasy-gold text-xs font-royal tracking-widest uppercase">Level</span>
-                <span className="text-white font-body text-lg font-bold">{MOCK_USER.level}</span>
+                <span className="text-fantasy-gold text-xs font-royal tracking-widest uppercase">Hero</span>
+                <span className="text-white font-body text-lg font-bold">{currentUser?.name}</span>
              </div>
+             
              <div className="w-12 h-12 rounded-full border-2 border-fantasy-gold/30 bg-fantasy-primary flex items-center justify-center text-fantasy-gold shadow-gold-glow relative overflow-hidden group">
                 <div className="absolute inset-0 bg-fantasy-gold/10 group-hover:bg-fantasy-gold/20 transition-colors"></div>
                 <WizardHatIcon size={24} />
              </div>
+             
+             <button onClick={handleLogout} className="text-fantasy-text-muted hover:text-red-400 transition-colors ml-2" title="Logout">
+               <LogOut size={20} />
+             </button>
           </div>
        </nav>
 
@@ -557,6 +763,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-fantasy-dark text-fantasy-text font-body selection:bg-fantasy-gold selection:text-fantasy-dark">
+      {view === 'login' && renderLogin()}
+      {view === 'register' && renderRegister()}
       {view === 'landing' && renderLanding()}
       {view === 'dashboard' && renderDashboard()}
       {view === 'new-quest' && renderNewQuest()}
