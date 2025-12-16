@@ -1,28 +1,17 @@
-import { GoogleGenAI, Type } from "@google/genai";
-import { Step, Message } from "../types";
 
-const apiKey = process.env.API_KEY || '';
+import { Quest, Step, Message, AvatarType } from "../types";
 
-// Safely initialize the client only when needed to prevent crashes if env is missing during load
-const getAiClient = () => {
-  if (!apiKey) {
-    console.error("API Key is missing!");
-    throw new Error("API Key is missing. Please set process.env.API_KEY.");
-  }
-  return new GoogleGenAI({ apiKey });
-};
+const API_URL = 'http://localhost:3000/api';
 
-async function fileToPart(file: File): Promise<{ inlineData: { data: string; mimeType: string } }> {
+// Helper to convert file to base64 for transport to server
+async function fileToBase64(file: File): Promise<{ base64: string; mimeType: string }> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      // remove the Data-URL prefix (e.g. "data:image/png;base64,")
       const base64String = (reader.result as string).split(',')[1];
       resolve({
-        inlineData: {
-          data: base64String,
-          mimeType: file.type
-        }
+        base64: base64String,
+        mimeType: file.type
       });
     };
     reader.onerror = reject;
@@ -30,118 +19,63 @@ async function fileToPart(file: File): Promise<{ inlineData: { data: string; mim
   });
 }
 
-export const generateQuestBreakdown = async (
+export const fetchQuests = async (): Promise<Quest[]> => {
+  const res = await fetch(`${API_URL}/quests`);
+  if (!res.ok) throw new Error("Failed to fetch quests");
+  return res.json();
+};
+
+export const createQuest = async (
   taskDescription: string, 
   stepCount: number,
-  file?: File | null
-): Promise<{ title: string; steps: Omit<Step, 'id' | 'isCompleted' | 'chatHistory'>[] }> => {
-  const ai = getAiClient();
-  
-  const prompt = `
-    You are an Expert Mentor and Gamification Quest Master. 
-    Analyze the following task description ${file ? "and the attached file" : ""}: "${taskDescription}".
-    
-    The user is a complete beginner who feels overwhelmed and desperate for help. They know nothing about how to start or what to do.
-    
-    Break the task down into exactly ${stepCount} distinct steps.
-    
-    IMPORTANT: Detect the language of the task description/file. 
-    If the task description is in Hebrew, the Title, Step Titles, and Descriptions MUST be in Hebrew.
-    If it is in English, they must be in English.
-
-    Create a catchy "Quest Title".
-    
-    For each step:
-    1. Title: A short, action-oriented title.
-    2. Description: This must be EXTENSIVE, DETAILED, and INSTRUCTIONAL. Do not just say "Do X". Explain EXACTLY HOW to do "X". Assume the user needs hand-holding. Break the description down into practical mini-instructions or bullets within the text.
-    3. Tools: A list of specific tools or resources.
-  `;
-
-  const parts: any[] = [{ text: prompt }];
-
+  file?: File | null,
+  avatar?: AvatarType
+): Promise<Quest> => {
+  let fileData = null;
   if (file) {
-    const filePart = await fileToPart(file);
-    parts.push(filePart);
+    fileData = await fileToBase64(file);
   }
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: { parts },
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          questTitle: { type: Type.STRING },
-          steps: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                title: { type: Type.STRING },
-                description: { type: Type.STRING },
-                tools: { 
-                  type: Type.ARRAY, 
-                  items: { type: Type.STRING } 
-                }
-              },
-              required: ['title', 'description']
-            }
-          }
-        },
-        required: ['questTitle', 'steps']
-      }
-    }
+  const res = await fetch(`${API_URL}/quests`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      taskDescription,
+      stepCount,
+      fileData,
+      avatar
+    })
   });
 
-  const text = response.text;
-  if (!text) throw new Error("No response from AI");
-  
-  const data = JSON.parse(text);
-  
-  return {
-    title: data.questTitle,
-    steps: data.steps
-  };
+  if (!res.ok) throw new Error("Failed to create quest");
+  return res.json();
 };
 
-export const getStepChatResponse = async (
-  currentStep: Step,
-  questContext: string,
-  userMessage: string,
-  history: Message[]
-): Promise<string> => {
-  const ai = getAiClient();
-
-  // Convert previous history to prompt context format (simplification for stateless generic chat)
-  const conversationContext = history.map(h => `${h.role}: ${h.text}`).join('\n');
-
-  const systemInstruction = `
-    You are an AI Quest Companion helping a user complete a specific step of a project.
-    
-    Overall Quest: ${questContext}
-    Current Step: ${currentStep.title}
-    Step Description: ${currentStep.description}
-    
-    Your goal is to provide specific advice, code snippets (if technical), or motivation related ONLY to this current step.
-    Keep answers concise and helpful. Be encouraging like an RPG companion.
-
-    IMPORTANT: Always respond in the same language as the User's latest message.
-  `;
-
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: `
-      Previous conversation:
-      ${conversationContext}
-      
-      User's new question:
-      ${userMessage}
-    `,
-    config: {
-      systemInstruction: systemInstruction,
-    }
+export const toggleStepCompletion = async (questId: string, stepIndex: number): Promise<Quest> => {
+  const res = await fetch(`${API_URL}/quests/${questId}/step/${stepIndex}`, {
+    method: 'PATCH'
   });
 
-  return response.text || "I'm having trouble connecting to the ethereal plane right now.";
+  if (!res.ok) throw new Error("Failed to update step");
+  return res.json();
 };
+
+export const sendChatMessage = async (
+  questId: string,
+  stepIndex: number,
+  message: string
+): Promise<Message[]> => {
+  const res = await fetch(`${API_URL}/quests/${questId}/step/${stepIndex}/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message })
+  });
+
+  if (!res.ok) throw new Error("Failed to send message");
+  return res.json();
+};
+
+// Legacy shim not needed anymore as we moved logic to server, 
+// keeping exports consistent for App.tsx but redirecting to new logic.
+export const generateQuestBreakdown = async () => { throw new Error("Use createQuest"); };
+export const getStepChatResponse = async () => { throw new Error("Use sendChatMessage"); };

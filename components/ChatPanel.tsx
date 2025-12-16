@@ -1,7 +1,7 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, Step } from '../types';
 import { Send, Bot, User, Loader2, Scroll, CheckCircle, Sparkles, RotateCcw } from 'lucide-react';
-import { getStepChatResponse } from '../services/geminiService';
 
 interface ChatPanelProps {
   step: Step;
@@ -35,14 +35,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
     const userText = input;
     setInput('');
-    addMessageToStep(userText, 'user');
     setIsLoading(true);
 
     try {
-      const response = await getStepChatResponse(step, questTitle, userText, step.chatHistory);
-      addMessageToStep(response, 'model');
+      // The parent component handles calling the API and updating state
+      await addMessageToStep(userText, 'user');
     } catch (error) {
-      addMessageToStep("Connection lost. Please try again.", 'model');
+      // Error handling is mostly done in parent
     } finally {
       setIsLoading(false);
     }

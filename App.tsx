@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Quest, ViewState, Step, AvatarType } from './types';
-import { generateQuestBreakdown } from './services/geminiService';
+import { createQuest, fetchQuests, toggleStepCompletion, sendChatMessage } from './services/geminiService';
 import { QuestMap } from './components/QuestMap';
 import { ChatPanel } from './components/ChatPanel';
 import { 
@@ -124,6 +125,13 @@ export default function App() {
   
   const activeQuest = quests.find(q => q.id === activeQuestId);
 
+  // Load initial data from backend
+  useEffect(() => {
+    fetchQuests()
+      .then(data => setQuests(data))
+      .catch(err => console.error("Could not load quests:", err));
+  }, []);
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
@@ -136,26 +144,10 @@ export default function App() {
     setError(null);
 
     try {
-      const breakdown = await generateQuestBreakdown(taskInput, stepCount, selectedFile);
+      // Changed: Call API instead of local service
+      const newQuest = await createQuest(taskInput, stepCount, selectedFile, selectedAvatar);
       
-      const newQuest: Quest = {
-        id: crypto.randomUUID(),
-        title: breakdown.title,
-        originalTask: taskInput || (selectedFile ? `Analyze ${selectedFile.name}` : 'New Quest'),
-        createdAt: Date.now(),
-        difficulty: stepCount === 5 ? '5' : '10',
-        avatar: selectedAvatar,
-        currentStepIndex: 0,
-        isCompleted: false,
-        steps: breakdown.steps.map((s, i) => ({
-          ...s,
-          id: crypto.randomUUID(),
-          isCompleted: false,
-          chatHistory: []
-        }))
-      };
-
-      setQuests([newQuest, ...quests]);
+      setQuests(prev => [newQuest, ...prev]);
       setActiveQuestId(newQuest.id);
       setSelectedMapStepIndex(0);
       setView('active-quest');
@@ -163,71 +155,67 @@ export default function App() {
       setSelectedFile(null);
     } catch (e) {
       console.error(e);
-      setError("We couldn't generate the quest plan. Please try again.");
+      setError("We couldn't generate the quest plan. Is the server running?");
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleToggleStepCompletion = (questId: string, stepIndex: number) => {
-    setQuests(prev => prev.map(q => {
-      if (q.id !== questId) return q;
+  const handleToggleStepCompletion = async (questId: string, stepIndex: number) => {
+    // Optimistic update (optional) or wait for server
+    // For safety, we wait for server to return updated quest object
+    try {
+      const updatedQuest = await toggleStepCompletion(questId, stepIndex);
       
-      // 1. Toggle the completion status of the target step
-      const updatedSteps = [...q.steps];
-      const newStatus = !updatedSteps[stepIndex].isCompleted;
-      updatedSteps[stepIndex] = {
-        ...updatedSteps[stepIndex],
-        isCompleted: newStatus
-      };
+      setQuests(prev => prev.map(q => q.id === questId ? updatedQuest : q));
 
-      // 2. Recalculate the "Current Progress Index" (Avatar position)
-      // The current step is the FIRST incomplete step.
-      let newCurrentIndex = updatedSteps.findIndex(s => !s.isCompleted);
-      
-      // If all steps are completed (findIndex returns -1), set index to length (finished)
-      if (newCurrentIndex === -1) {
-        newCurrentIndex = updatedSteps.length;
-      }
-
-      // 3. Determine if the entire quest is finished
-      const isQuestFinished = newCurrentIndex === updatedSteps.length;
-
-      return {
-        ...q,
-        steps: updatedSteps,
-        currentStepIndex: newCurrentIndex,
-        isCompleted: isQuestFinished
-      };
-    }));
-
-    // Optional: If we just COMPLETED a step (and it wasn't the last one), 
-    // we might want to automatically view the next step. 
-    // However, if we are UNDOING, we usually want to stay on the current view.
-    const currentQ = quests.find(q => q.id === questId);
-    if (currentQ && !currentQ.steps[stepIndex].isCompleted) {
-        // We are marking as complete
+      // Auto-advance logic
+      if (!updatedQuest.steps[stepIndex].isCompleted) {
+        // We marked as incomplete? Do nothing.
+      } else {
+        // We marked as complete
         const nextIdx = stepIndex + 1;
-        if (nextIdx < currentQ.steps.length) {
-            setSelectedMapStepIndex(nextIdx);
+        if (nextIdx < updatedQuest.steps.length) {
+          setSelectedMapStepIndex(nextIdx);
         }
+      }
+    } catch (e) {
+      console.error("Failed to toggle step", e);
     }
   };
 
-  const addMessageToStep = (questId: string, stepIndex: number, text: string, role: 'user' | 'model') => {
+  const handleAddMessageToStep = async (questId: string, stepIndex: number, text: string, role: 'user' | 'model') => {
+    if (role === 'model') return; // The API call handles adding both user and model messages
+
+    // 1. Optimistic update for User message
     setQuests(prev => prev.map(q => {
       if (q.id !== questId) return q;
       const updatedSteps = [...q.steps];
       updatedSteps[stepIndex] = {
         ...updatedSteps[stepIndex],
-        chatHistory: [...updatedSteps[stepIndex].chatHistory, {
-          role,
-          text,
-          timestamp: Date.now()
-        }]
+        chatHistory: [...updatedSteps[stepIndex].chatHistory, { role: 'user', text, timestamp: Date.now() }]
       };
       return { ...q, steps: updatedSteps };
     }));
+
+    try {
+      // 2. Call API
+      const updatedHistory = await sendChatMessage(questId, stepIndex, text);
+
+      // 3. Update with server response (which includes the AI reply)
+      setQuests(prev => prev.map(q => {
+        if (q.id !== questId) return q;
+        const updatedSteps = [...q.steps];
+        updatedSteps[stepIndex] = {
+          ...updatedSteps[stepIndex],
+          chatHistory: updatedHistory
+        };
+        return { ...q, steps: updatedSteps };
+      }));
+    } catch (e) {
+      console.error("Failed to send message", e);
+      // Optional: Add error message to chat
+    }
   };
 
   // --- Views ---
@@ -558,7 +546,7 @@ export default function App() {
                  isActiveStep={selectedMapStepIndex === activeQuest.currentStepIndex}
                  isQuestCompleted={activeQuest.isCompleted}
                  onToggleCompletion={() => handleToggleStepCompletion(activeQuest.id, selectedMapStepIndex)}
-                 addMessageToStep={(text, role) => addMessageToStep(activeQuest.id, selectedMapStepIndex, text, role)}
+                 addMessageToStep={(text, role) => handleAddMessageToStep(activeQuest.id, selectedMapStepIndex, text, role)}
                />
              )}
           </aside>
