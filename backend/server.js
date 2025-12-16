@@ -5,7 +5,8 @@ import fs from 'fs/promises';
 import { GoogleGenAI, Type } from "@google/genai";
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import dotenv from "dotenv";
+dotenv.config();
 // Environment setup
 const apiKey = process.env.API_KEY;
 if (!apiKey) {
