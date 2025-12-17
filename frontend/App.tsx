@@ -1,10 +1,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Quest, ViewState, Step, AvatarType, User } from './types';
-import { createQuest, fetchQuests, toggleStepCompletion, sendChatMessage } from '../backend/services/geminiService';
-import { loginUser, registerUser } from '../backend/services/authService';
-import { QuestMap } from './components/QuestMap';
-import { ChatPanel } from './components/ChatPanel';
+import { Quest, ViewState, Step, AvatarType, User } from './src/types';
+import { createQuest, fetchQuests, toggleStepCompletion, sendChatMessage } from './services/geminiService';
+import { loginUser, registerUser } from './services/authService';
+import { QuestMap } from './src/components/QuestMap';
+import { ChatPanel } from './src/components/ChatPanel';
 import { 
   Sword, 
   Map as MapIcon, 
