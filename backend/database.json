@@ -6,7 +6,158 @@
       "password": "ככעיעא34642",
       "name": "גכעחכיע",
       "birthYear": "34"
+    },
+    {
+      "id": "ec1fac0b-245f-4f98-96ea-5ddc9f7da0ac",
+      "username": "BBBB",
+      "password": "123456",
+      "name": "OOO",
+      "birthYear": "2005"
     }
   ],
-  "quests": []
+  "quests": [
+    {
+      "id": "16302b37-15b4-4073-a171-a8e8ea895acd",
+      "ownerId": "ec1fac0b-245f-4f98-96ea-5ddc9f7da0ac",
+      "title": "The Grand Party Planner's Journey",
+      "originalTask": "to make party",
+      "createdAt": 1765975784599,
+      "difficulty": "10",
+      "avatar": "WIZARD_BEARD",
+      "currentStepIndex": 10,
+      "isCompleted": true,
+      "steps": [
+        {
+          "title": "Define Your Party Vision",
+          "description": "*   Brainstorm the type of party you want to host (e.g., birthday, casual get-together, themed event).\n*   Choose a preferred date and time for the party, considering guest availability.\n*   Decide on a suitable location (e.g., your home, a rented venue, outdoors).\n*   Estimate the number of guests you'd like to invite.",
+          "tools": [
+            "Notebook",
+            "Pen",
+            "Calendar"
+          ],
+          "id": "234069f6-8413-4954-976e-8e5d41fe5c06",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Budgeting Your Bash",
+          "description": "*   Determine your total budget for the entire party.\n*   Allocate funds to key categories such as food, drinks, decorations, entertainment, and invitations.\n*   Identify areas where you can save money or splurge.",
+          "tools": [
+            "Spreadsheet software",
+            "Calculator",
+            "Budget planner app"
+          ],
+          "id": "3f20f687-efaa-4353-b18c-c889f3165e23",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Curate Your Guest List",
+          "description": "*   Compile a preliminary list of all potential guests you wish to invite.\n*   Consider the size of your venue and any social dynamics when finalizing the list.\n*   Organize your guest list for easy tracking.",
+          "tools": [
+            "Spreadsheet software",
+            "Phone contacts",
+            "Social media lists"
+          ],
+          "id": "22569b31-b3b1-422c-bf88-0ee14a5ce15b",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Send Invites & Track RSVPs",
+          "description": "*   Choose an invitation method (e.g., physical cards, digital invitation service, messaging app).\n*   Design or write your invitations, including all essential party details (date, time, location, RSVP info).\n*   Send out invitations well in advance to allow guests time to respond.\n*   Set up a system to track RSVPs and dietary restrictions.",
+          "tools": [
+            "Email service",
+            "Messaging app",
+            "Invitation website (e.g., Evite, Paperless Post)",
+            "RSVP tracking spreadsheet"
+          ],
+          "id": "6efab978-162d-451b-977b-221d83de1335",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Feast & Refreshment Planning",
+          "description": "*   Decide on a menu for food and drinks (e.g., appetizers, main dishes, desserts, alcoholic/non-alcoholic beverages).\n*   Consider any guest dietary restrictions or allergies.\n*   Create a detailed shopping list based on your chosen menu.",
+          "tools": [
+            "Recipe websites",
+            "Cookbook",
+            "Shopping list app",
+            "Measuring cups/spoons"
+          ],
+          "id": "85c8aa25-16d4-47f4-97d9-3ad6b1f2b985",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Decorate Your Party Zone",
+          "description": "*   Brainstorm decoration themes or ideas that match your party vision.\n*   Purchase or create DIY decorations to enhance the ambiance.\n*   Plan the layout and arrangement of your party space.",
+          "tools": [
+            "Craft supplies",
+            "Online decor stores",
+            "Balloons",
+            "Streamers",
+            "Tape/Adhesive"
+          ],
+          "id": "75ffaba5-e1d3-454f-9619-3161a2d641a5",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Entertainment & Ambiance",
+          "description": "*   Select appropriate music playlists to set the mood.\n*   Plan any games or activities to keep guests entertained.\n*   Prepare your sound system or speakers for music playback.",
+          "tools": [
+            "Music streaming service",
+            "Bluetooth speakers",
+            "Board games",
+            "Card games",
+            "Party game ideas (online resources)"
+          ],
+          "id": "15228d36-62a4-4e1f-b4ce-484ac8ba1f4a",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Shopping Spree!",
+          "description": "*   Visit grocery stores and party supply stores to purchase all food items, beverages, and decorations from your lists.\n*   Ensure you have all essential party supplies like plates, cups, napkins, and serving utensils.",
+          "tools": [
+            "Shopping cart",
+            "Reusable bags",
+            "Payment method (cash/card)",
+            "Car/Transportation"
+          ],
+          "id": "5c1e611f-60b4-4fa3-8cfe-907a6a3bf3a0",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Prep & Setup Day",
+          "description": "*   Clean and organize the party area thoroughly.\n*   Prepare any food or drinks that can be made in advance (e.g., chopping vegetables, making a punch).\n*   Set up all decorations and arrange furniture.\n*   Chill beverages and prepare ice.",
+          "tools": [
+            "Cleaning supplies",
+            "Kitchen utensils",
+            "Serving dishes",
+            "Ice bucket",
+            "Plates/Cutlery"
+          ],
+          "id": "eeeca5ca-258e-4634-9813-e9b4dd756d3c",
+          "isCompleted": true,
+          "chatHistory": []
+        },
+        {
+          "title": "Host with the Most",
+          "description": "*   Welcome guests as they arrive and make them feel comfortable.\n*   Ensure food and drinks are readily available and replenished as needed.\n*   Engage with guests, facilitate conversation, and encourage participation in activities.\n*   Handle any unexpected situations calmly and enjoy the fruits of your planning!",
+          "tools": [
+            "A welcoming smile",
+            "Music",
+            "Trash bags for cleanup",
+            "First aid kit (just in case)"
+          ],
+          "id": "af571758-b3c9-412d-9666-584d4319875e",
+          "isCompleted": true,
+          "chatHistory": []
+        }
+      ]
+    }
+  ]
 }
