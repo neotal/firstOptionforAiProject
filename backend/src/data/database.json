@@ -24,8 +24,8 @@
       "createdAt": 1765975784599,
       "difficulty": "10",
       "avatar": "WIZARD_BEARD",
-      "currentStepIndex": 10,
-      "isCompleted": true,
+      "currentStepIndex": 1,
+      "isCompleted": false,
       "steps": [
         {
           "title": "Define Your Party Vision",
@@ -48,7 +48,7 @@
             "Budget planner app"
           ],
           "id": "3f20f687-efaa-4353-b18c-c889f3165e23",
-          "isCompleted": true,
+          "isCompleted": false,
           "chatHistory": []
         },
         {
