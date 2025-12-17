@@ -1,5 +1,5 @@
 
-import { User } from "../types";
+import { User } from "../../frontend/types";
 
 const API_URL = 'http://localhost:3000/api';
 

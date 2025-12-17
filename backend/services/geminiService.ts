@@ -1,5 +1,5 @@
 
-import { Quest, Step, Message, AvatarType } from "../types";
+import { Quest, Step, Message, AvatarType } from "../../frontend/types";
 
 const API_URL = 'http://localhost:3000/api';
 

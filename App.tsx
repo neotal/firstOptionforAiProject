@@ -1,8 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Quest, ViewState, Step, AvatarType, User } from './types';
-import { createQuest, fetchQuests, toggleStepCompletion, sendChatMessage } from './frontend/services/geminiService';
-import { loginUser, registerUser } from './frontend/services/authService';
+import { createQuest, fetchQuests, toggleStepCompletion, sendChatMessage } from './backend/services/geminiService';
+import { loginUser, registerUser } from './backend/services/authService';
 import { QuestMap } from './frontend/components/QuestMap';
 import { ChatPanel } from './frontend/components/ChatPanel';
 import { 
