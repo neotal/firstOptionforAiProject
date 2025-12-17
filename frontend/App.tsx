@@ -285,7 +285,9 @@ export default function App() {
   );
 
   const renderLogin = () => (
+    
     <div className="min-h-screen flex flex-col items-center justify-center relative bg-fantasy-dark p-4">
+      
       {renderAuthBackground()}
       
       <div className="w-full max-w-md bg-fantasy-primary/90 border border-fantasy-gold/30 p-8 rounded-sm backdrop-blur-md shadow-2xl relative z-10 animate-[fadeIn_0.5s_ease-out]">
