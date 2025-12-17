@@ -154,13 +154,23 @@ export default function App() {
           chatHistory: []
         }))
       };
-
+       console.log('Generated Quest:', newQuest);
       setQuests([newQuest, ...quests]);
+      console.log('1' );
       setActiveQuestId(newQuest.id);
+     console.log('2' );
       setSelectedMapStepIndex(0);
+           console.log('3' );
+
       setView('active-quest');
+           console.log('4' );
+
       setTaskInput('');
+           console.log('5' );
+
       setSelectedFile(null);
+                 console.log('6' );
+
     } catch (e) {
       console.error(e);
       setError("We couldn't generate the quest plan. Please try again.");

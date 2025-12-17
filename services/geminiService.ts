@@ -1,7 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Step, Message } from "../types";
 
-const apiKey = process.env.API_KEY || '';
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+ 
 
 // Safely initialize the client only when needed to prevent crashes if env is missing during load
 const getAiClient = () => {
