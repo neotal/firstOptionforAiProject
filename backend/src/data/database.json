@@ -13,9 +13,135 @@
       "password": "123456",
       "name": "OOO",
       "birthYear": "2005"
+    },
+    {
+      "id": "34a9312a-2209-4282-b5b8-e205cdc709fe",
+      "username": "נעמי מרים",
+      "password": "123789",
+      "name": "נעמי",
+      "birthYear": "2005"
     }
   ],
   "quests": [
+    {
+      "id": "6dd97950-8191-4921-a97c-f5d89172a722",
+      "ownerId": "34a9312a-2209-4282-b5b8-e205cdc709fe",
+      "title": "בניית משחק איקס עיגול ב-JavaScript עם ממשק משתמש יפה",
+      "originalTask": "אני צריכה ליצור משחק איקס עיגול ב JS עם ממשק משתמש יפה",
+      "createdAt": 1766064143838,
+      "avatar": "MAGIC_WAND",
+      "currentStepIndex": 0,
+      "isCompleted": false,
+      "steps": [
+        {
+          "description": "צור קובץ HTML שיכלול את כותרת המשחק, מיכל עבור לוח המשחק (רשת 3x3 של תאים), תצוגת סטטוס המשחק (למשל, תור מי), וכפתור איפוס.",
+          "title": "הגדרת מבנה ה-HTML הבסיסי",
+          "tools": [
+            "HTML"
+          ],
+          "id": "41de33bd-6ae7-47f3-bcf1-aceb6bb332d4",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "עצב את קובץ ה-CSS כדי ליצור את הפריסה הכללית של הדף ואת הרשת של לוח המשחק. השתמש ב-CSS Grid או Flexbox כדי לסדר את התאים.",
+          "title": "עיצוב CSS בסיסי - פריסת לוח המשחק",
+          "tools": [
+            "CSS"
+          ],
+          "id": "98dd4c4e-972d-412c-a8d6-76671cd4c2a1",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "עצב את התאים הבודדים, את סימוני השחקנים (X ו-O), ואת הודעות הסטטוס כך שיראו אסתטיים וברורים. הוסף אפקטים קלים במעבר עכבר (hover).",
+          "title": "עיצוב CSS - אלמנטים במשחק וסימונים",
+          "tools": [
+            "CSS"
+          ],
+          "id": "b1db9a0f-9bd7-4d12-89f6-711be3b21b83",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "כתוב קוד JavaScript שיקבל הפניות לאלמנטי ה-HTML הרלוונטיים (הלוח, התאים, תצוגת הסטטוס, כפתור האיפוס) ואתחל משתני משחק: מצב הלוח (מערך), השחקן הנוכחי (X/O), ודגל המציין אם המשחק פעיל.",
+          "title": "JavaScript - בחירת אלמנטי DOM ואתחול משתנים",
+          "tools": [
+            "JavaScript",
+            "DOM API"
+          ],
+          "id": "e81b2543-76af-41bc-8817-fcc819f1f9a7",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "יישם פונקציה שתופעל בלחיצה על תא בלוח. הפונקציה צריכה לבדוק אם התא ריק, לסמן אותו בסימון השחקן הנוכחי, ולעדכן את מצב הלוח הפנימי ואת הממשק.",
+          "title": "JavaScript - טיפול בלחיצת שחקן",
+          "tools": [
+            "JavaScript",
+            "Event Listeners"
+          ],
+          "id": "76e491ec-2696-44a7-b92e-0a7dc384b6bb",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "כתוב פונקציה שתבדוק לאחר כל מהלך אם יש תנאי ניצחון (שלושה סימונים זהים בשורה, עמודה או אלכסון). אם יש מנצח, עדכן את סטטוס המשחק ועצור את היכולת לשחק.",
+          "title": "JavaScript - בדיקת ניצחון",
+          "tools": [
+            "JavaScript",
+            "Logical Operators"
+          ],
+          "id": "559f362e-14cc-4144-abdf-3e342ddd1974",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "הוסף פונקציה שתבדוק אם כל התאים מלאים ואין מנצח, מה שמעיד על תיקו. במקרה כזה, עדכן את סטטוס המשחק.",
+          "title": "JavaScript - בדיקת תיקו",
+          "tools": [
+            "JavaScript",
+            "Array Methods"
+          ],
+          "id": "d7cb9dee-fc88-40f6-9d76-6b105b02860b",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "שלב את הלוגיקה להחלפת השחקן הנוכחי לאחר כל מהלך חוקי, ועדכן את תצוגת הסטטוס כדי להראות תור מי או מי ניצח.",
+          "title": "JavaScript - החלפת שחקנים ועדכון סטטוס",
+          "tools": [
+            "JavaScript",
+            "Conditional Logic"
+          ],
+          "id": "1b5266d9-deb1-4087-93aa-0baa9456c342",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "יישם פונקציה שתופעל בלחיצה על כפתור האיפוס. הפונקציה צריכה לאפס את כל משתני המשחק, לנקות את לוח המשחק בממשק, ולהחזיר את המשחק למצב התחלתי.",
+          "title": "JavaScript - איפוס המשחק",
+          "tools": [
+            "JavaScript",
+            "DOM Manipulation"
+          ],
+          "id": "4b824628-cdc4-45c3-8506-325816f32f61",
+          "isCompleted": false,
+          "chatHistory": []
+        },
+        {
+          "description": "הוסף שיפורים ויזואליים נוספים כמו אנימציות קלות למילוי תא, אפקטים לאחר ניצחון/תיקו, והפוך את המשחק לרספונסיבי כך שייראה טוב על מסכים בגדלים שונים.",
+          "title": "שיפורי ממשק משתמש ורספונסיביות",
+          "tools": [
+            "CSS (Transitions/Animations/Media Queries)",
+            "JavaScript (Dynamic Styling)"
+          ],
+          "id": "38fb02dd-3d47-413b-9e91-ce2fcbc4a2c0",
+          "isCompleted": false,
+          "chatHistory": []
+        }
+      ]
+    },
     {
       "id": "16302b37-15b4-4073-a171-a8e8ea895acd",
       "ownerId": "ec1fac0b-245f-4f98-96ea-5ddc9f7da0ac",

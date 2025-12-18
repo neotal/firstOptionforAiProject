@@ -64,6 +64,10 @@ export async function generateChatResponse(quest, step) {
       ${conversation}
     `
   });
+console.log(
+  'GEMINI KEY LOADED:',
+  process.env.GEMINI_API_KEY ? 'YES' : 'NO'
+);
 
   return response.text || 'Unable to respond';
 }
