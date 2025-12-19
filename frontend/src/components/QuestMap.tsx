@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Quest, Step, AvatarType } from '../types';
 import { Check, Lock, MapPin, Trophy } from 'lucide-react';
@@ -22,7 +21,7 @@ const AvatarIcon = ({ type }: { type: AvatarType }) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" data-testid="avatar-container">
       <div className="text-4xl filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] animate-bounce z-10 relative">
         {getEmoji()}
       </div>
@@ -45,12 +44,15 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
         return (
           <div 
             key={step.id} 
+            data-testid={`step-row-${index}`}
             className={`relative z-10 w-full max-w-4xl flex items-center group transition-all duration-300 ${
               index % 2 === 0 ? 'flex-row' : 'flex-row md:flex-row-reverse'
             }`}
           >
             {/* Timeline Node / Waypoint */}
-            <div className={`
+            <div 
+              data-testid={`step-node-${index}`}
+              className={`
               absolute left-8 md:left-1/2 -translate-x-1/2 ml-6 md:ml-0
               flex flex-col items-center justify-center w-14 h-14 rounded-full
               border-2 transition-all duration-500 bg-fantasy-dark z-20 shadow-lg
@@ -76,6 +78,7 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
 
             {/* Content Card */}
             <div 
+              data-testid={`step-card-${index}`}
               onClick={() => onSelectStep(index)}
               className={`ml-36 md:ml-0 w-[calc(100%-120px)] md:w-[46%] cursor-pointer transition-all duration-300 transform ${
                 isSelected ? 'scale-105 z-20' : 'scale-100 z-10 hover:scale-102'
@@ -120,7 +123,7 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
       })}
 
       {/* Final Trophy */}
-      <div className="relative z-10 pt-8 flex flex-col items-center">
+      <div className="relative z-10 pt-8 flex flex-col items-center" data-testid="final-trophy">
         <div className={`w-24 h-24 rotate-45 border-2 flex items-center justify-center bg-fantasy-dark transition-all duration-500 shadow-2xl ${
           quest.isCompleted ? 'border-fantasy-gold shadow-gold-glow scale-110' : 'border-fantasy-text-muted/10'
         }`}>
@@ -134,7 +137,7 @@ export const QuestMap: React.FC<QuestMapProps> = ({ quest, onSelectStep, selecte
           </div>
         )}
         <div className="mt-10 px-6 py-2 text-fantasy-gold/60 font-royal text-[10px] tracking-[0.4em] uppercase border-t border-b border-fantasy-gold/10">
-           Finish Line
+            Finish Line
         </div>
       </div>
     </div>
