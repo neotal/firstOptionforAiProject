@@ -2,7 +2,9 @@ import fs from 'fs/promises';
 import path from 'path';
 
 // process.cwd() בתוך Docker = /app
-const DB_FILE = path.join(process.cwd(), 'src/data/database.json');
+const DB_FILE = process.env.NODE_ENV === 'test' 
+  ? path.resolve('tests/fixtures/test_db.json') 
+  : path.resolve('src/data/database.json');
 
 export async function loadDb() {
   try {
