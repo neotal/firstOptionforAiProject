@@ -1,53 +1,43 @@
 pipeline {
-    agent any 
-
-    environment {
-        DOCKER_IMAGE = "username/project-name"
-        REGISTRY_CREDENTIALS = 'docker-hub-credentials-id'
-    }
+    agent any
 
     stages {
-        stage('Install') {
+        stage('1. Checkout') {
             steps {
-                echo 'Installing dependencies...'
-                // פקודה לדוגמה: sh 'npm install' או 'pip install'
+                checkout scm
             }
         }
 
-        stage('Test') {
+        stage('2. Install & Test Backend') {
             steps {
-                echo 'Running tests...'
-                // פקודה לדוגמה: sh 'npm test'
-            }
-        }
-
-        stage('Build Docker') {
-            steps {
-                script {
-                    // בניית האימג'
-                    app = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                dir('backend') {
+                    sh 'npm install'
+                    sh 'npm test'
                 }
             }
         }
 
-        stage('Push to Registry') {
+        stage('3. Install & Test Frontend') {
             steps {
-                script {
-                    // התחברות ודחיפה לרגיסטרי
-                    docker.withRegistry('', REGISTRY_CREDENTIALS) {
-                        app.push()
-                        app.push("latest")
-                    }
+                dir('frontend') {
+                    sh 'npm install'
+                    sh 'npm test -- --run'
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('4. Docker Build & Compose') {
             steps {
-                echo 'Deploying...'
-                // פקודה לפריסה בשרת או בענן
-                // sh 'docker-compose up -d'
+                echo 'Building and starting environment with Docker Compose...'
+                sh 'docker-compose build'
+                sh 'docker-compose up -d'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up containers...'
         }
     }
 }

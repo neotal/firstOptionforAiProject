@@ -30,8 +30,8 @@
       "originalTask": "איך להכין פיצה",
       "createdAt": 1766079368106,
       "avatar": "CRYSTAL_BALL",
-      "currentStepIndex": 5,
-      "isCompleted": true,
+      "currentStepIndex": 1,
+      "isCompleted": false,
       "steps": [
         {
           "description": "מערבבים קמח, מים, שמרים, סוכר, מלח ושמן זית בקערה גדולה. לשים את הבצק עד שהוא חלק ואלסטי. משמנים קערה, מניחים את הבצק ומכסים. נותנים לו לתפוח במקום חמים כשעה עד שהוא מכפיל את נפחו.",
@@ -55,7 +55,7 @@
             "מחבת או סיר (לרוטב)"
           ],
           "id": "b8205c84-d6f5-472c-849b-ab543b2f8f0b",
-          "isCompleted": true,
+          "isCompleted": false,
           "chatHistory": []
         },
         {
