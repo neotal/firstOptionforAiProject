@@ -37,7 +37,11 @@ pipeline {
         stage('4. Docker Build & Compose') {
             steps {
                 echo 'Building and starting environment with Docker Compose...'
-                // פקודות אלו יעבדו כי התקנו את docker-compose בתוך הקונטיינר של ג'נקינס
+                
+                // יצירת תיקייה וקובץ .env ריק כדי שדוקר לא יתלונן
+                sh 'mkdir -p backend/src'
+                sh 'touch backend/src/.env'
+                
                 sh 'docker-compose build'
                 sh 'docker-compose up -d'
             }
