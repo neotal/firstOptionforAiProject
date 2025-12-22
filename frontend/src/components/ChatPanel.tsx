@@ -158,6 +158,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           <button 
             onClick={handleSend}
             disabled={isLoading || !input.trim() || step.isCompleted}
+            aria-label="send" // הוסיפי את השורה הזו
             className="px-4 bg-fantasy-gold/10 border border-fantasy-gold/30 text-fantasy-gold hover:bg-fantasy-gold hover:text-fantasy-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed rounded-sm"
           >
             <Send size={18} />

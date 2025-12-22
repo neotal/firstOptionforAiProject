@@ -16,4 +16,4 @@ app.use(express.json({ limit: '50mb' }));
 app.use('/api', authRoutes);
 app.use('/api', questRoutes);
 
-export default app;
+export { app };

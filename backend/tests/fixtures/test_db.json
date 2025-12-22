@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": "45765e97-71ce-4763-93f3-51aad4987cdc",
+      "username": "login_test_user",
+      "password": "securePassword123",
+      "name": "Login Tester"
+    }
+  ],
+  "quests": [
+    {
+      "id": "b7a2c2a8-34c2-4396-8fc5-f0d59ea88847",
+      "ownerId": "user-123",
+      "title": "משימת בדיקה אינטגרטיבית",
+      "originalTask": "ללמוד לנגן בגיטרה",
+      "createdAt": 1766143709991,
+      "currentStepIndex": 0,
+      "isCompleted": false,
+      "steps": [
+        {
+          "title": "צעד 1",
+          "description": "תיאור צעד",
+          "id": "a90081dd-bccb-4741-81c6-af9f3a5a7e99",
+          "isCompleted": false,
+          "chatHistory": []
+        }
+      ]
+    }
+  ]
+}
