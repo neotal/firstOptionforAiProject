@@ -41,7 +41,7 @@ pipeline {
                 // יצירת תיקייה וקובץ .env ריק כדי שדוקר לא יתלונן
                 sh 'mkdir -p backend/src'
                 sh 'touch backend/src/.env'
-                
+                sh 'docker-compose down --remove-orphans'
                 sh 'docker-compose build'
                 sh 'docker-compose up -d'
             }
