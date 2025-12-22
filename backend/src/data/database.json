@@ -30,7 +30,7 @@
       "originalTask": "אני צריכה ליצור משחק איקס עיגול ב JS עם ממשק משתמש יפה",
       "createdAt": 1766064143838,
       "avatar": "MAGIC_WAND",
-      "currentStepIndex": 0,
+      "currentStepIndex": 2,
       "isCompleted": false,
       "steps": [
         {
@@ -40,7 +40,7 @@
             "HTML"
           ],
           "id": "41de33bd-6ae7-47f3-bcf1-aceb6bb332d4",
-          "isCompleted": false,
+          "isCompleted": true,
           "chatHistory": []
         },
         {
@@ -50,7 +50,7 @@
             "CSS"
           ],
           "id": "98dd4c4e-972d-412c-a8d6-76671cd4c2a1",
-          "isCompleted": false,
+          "isCompleted": true,
           "chatHistory": []
         },
         {
